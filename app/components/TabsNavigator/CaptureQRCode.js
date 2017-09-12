@@ -42,6 +42,7 @@ export default class CaptureQRCode extends Component {
           onRead={(e)=>this.readQRCode(e)}
           reactivate
           showMarker
+          reactivateTimeout={1000}
           topContent={
             <View style={styles.innerContainer}>
               <Text style={styles.titletext}>
