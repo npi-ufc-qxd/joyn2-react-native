@@ -9,7 +9,17 @@ import {
 } from "react-native";
 
 export default class RegisterForm extends Component {
-  state = {};
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      nomeCompleto: '',
+      email: '',
+      senha: '',
+      confirmarSenha: ''
+    };
+  }
   
   render() {
     const navigate = this.props.navigate;
@@ -21,13 +31,14 @@ export default class RegisterForm extends Component {
         <TextInput
           placeholder="Nome Completo"
           placeholderTextColor="rgba(44, 62, 80,0.7)"
-          keyboardType="email-address"
+          keyboardType="default"
           returnKeyType="next"
           underlineColorAndroid="rgba(255,255,255,0.0)"
           style={styles.input}
           autoCapitalize='none'
           autoCorrect={false}
           onSubmitEditing={()=>this.emailInput.focus()}
+          onChangeText={(valorNomeCompleto) => {this.setState({nomeCompleto: valorNomeCompleto})}}
         />
         <TextInput
           placeholder="E-mail"
@@ -40,6 +51,7 @@ export default class RegisterForm extends Component {
           autoCorrect={false}
           onSubmitEditing={()=>this.passwordInput.focus()}
           ref={(input)=> this.emailInput = input}
+          onChangeText={(valorEmail) => {this.setState({email: valorEmail})}}
         />
         <TextInput
           placeholder="Senha"
@@ -50,6 +62,7 @@ export default class RegisterForm extends Component {
           style={styles.input}
           ref={(input)=> this.passwordInput = input}
           onSubmitEditing={()=>this.confirmPasswordInput.focus()}
+          onChangeText={(valorSenha) => {this.setState({senha: valorSenha})}}
         />
         <TextInput
           placeholder="Confirmar Senha"
@@ -59,10 +72,11 @@ export default class RegisterForm extends Component {
           underlineColorAndroid="rgba(255,255,255,0.0)"
           style={styles.input}
           ref={(input)=> this.confirmPasswordInput = input}
+          onChangeText={(valorConfirmarSenha) => {this.setState({confirmarSenha: valorConfirmarSenha})}}
         />
         <TouchableOpacity 
           style={styles.buttonContainer}
-          onPress={() => this.props.doRegister(navigate)}
+          onPress={() => this.props.doRegister(navigate, this.state.nomeCompleto, this.state.email, this.state.senha, this.state.confirmarSenha)}
         >
           <Text style={styles.buttonText}>Cadastrar</Text>
         </TouchableOpacity>

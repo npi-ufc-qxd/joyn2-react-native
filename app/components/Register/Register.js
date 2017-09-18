@@ -1,14 +1,37 @@
 import React, { Component } from 'react';
 import { AppRegistry, StyleSheet, View, Text, Image, StatusBar, ToastAndroid } from "react-native";
-
+import axios from 'axios';
 import RegisterForm from "./RegisterForm";
 
 export default class Register extends Component {
-    state = {  }
+
+    doRegister(navigate, nomeCompleto, email, senha, confirmarSenha) {
+      if (senha === confirmarSenha) {
+        axios({
+          method: 'post',
+          url: 'http://172.18.22.236:8080/cadastrar',
+          data: {
+            nome: nomeCompleto,
+            email: email,
+            senha: senha
+          },
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }).then(function (response) {
     
-    doRegister(navigate) {
-        ToastAndroid.showWithGravity('Cadastro realizado com sucesso!', ToastAndroid.SHORT, ToastAndroid.CENTER);
-        return navigate("Login");
+          if (response.data.codigo == 200) {
+            ToastAndroid.showWithGravity('Cadastro realizado com sucesso!', ToastAndroid.SHORT, ToastAndroid.CENTER);
+            return navigate("Login");
+          }
+    
+          ToastAndroid.showWithGravity('Algum erro ocorreu, tente novamente!', ToastAndroid.SHORT, ToastAndroid.CENTER);
+        }).catch(function (error) {
+          console.log(error.message);
+        });
+      } else {
+        ToastAndroid.showWithGravity('Senhas incorretas!', ToastAndroid.SHORT, ToastAndroid.CENTER);
+      } 
     }
     
       render() {

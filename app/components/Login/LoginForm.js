@@ -9,7 +9,16 @@ import {
 } from "react-native";
 
 export default class LoginForm extends Component {
-  state = {};
+  
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      email: '',
+      senha: ''
+    };
+  }
+
   render() {
     const navigate = this.props.navigate;
     return (
@@ -24,6 +33,7 @@ export default class LoginForm extends Component {
           autoCapitalize='none'
           autoCorrect={false}
           onSubmitEditing={()=>this.passwordInput.focus()}
+          onChangeText={(valorEmail) => {this.setState({email: valorEmail})}}
         />
         <TextInput
           placeholder="Sua senha"
@@ -33,10 +43,11 @@ export default class LoginForm extends Component {
           underlineColorAndroid="rgba(255,255,255,0.0)"
           style={styles.input}
           ref={(input)=> this.passwordInput = input}
+          onChangeText={(valorSenha) => {this.setState({senha: valorSenha})}}
         />
         <TouchableOpacity 
             style={styles.buttonContainer}
-            onPress={() => this.props.doLogin(navigate)}
+            onPress={() => this.props.doLogin(navigate, this.state.email, this.state.senha)}
         >
           <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
