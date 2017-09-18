@@ -20,20 +20,41 @@ export default class Ranking extends Component {
         super(props);
 
         this.state = {
-            lista: []
+            lista: [],
+            seed: 1,
+            refreshing: false
         };
     }
 
     componentWillMount(){
+        this.realizarRequest();
+    }
 
+    realizarRequest = () => {
         var instance = axios.create({
             baseURL: 'http://172.18.22.9:8080',
-            headers: {'Authorization': 'Joyn eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJpYW5rYUBnbWFpbC5jb20iLCJleHAiOjE1MDUzMzM0NDF9.iUM5ADppEKtzVZGgmiLgVNos4IRh72hUpnalMUDPMBDVvcb0sjd5jB9Nszizzx3EmvUSpjOkGaLqcpUSPcNUGg'}
+            headers: {'Authorization': 'Joyn eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJpYW5rYUBnbWFpbC5jb20iLCJleHAiOjE1MDU3NjMyMTN9.q8kflCqSjFtL5ebwsWwzxf3u-XMa1ciGyI-ZbgGWlj6dspb4rQKuvtU6ntmeV6WlFP9OZmK0bcT_QNIxI_IPrg'}
         }).get('/ranking/1')
-            .then(response => {this.setState({lista: response.data}); })
+            .then(response => {
+                this.setState(
+                    {
+                        lista: response.data,
+                        refreshing: false
+                    }
+                ); 
+            })
             .catch(() => {console.log("Erro ao recuperar os dados"); });
+    }
 
-
+    atualizarRanking = () => {
+        this.setState({
+            seed: this.state.seed + 1,
+            refreshing: true
+        },
+        () => {
+            this.realizarRequest();
+        }
+        );
     }
 
     renderHeader = () => {
@@ -60,6 +81,8 @@ export default class Ranking extends Component {
                     )}
                     keyExtractor={item => item.colocacao}
                     ListHeaderComponent={this.renderHeader}
+                    onRefresh={this.atualizarRanking}
+                    refreshing={this.state.refreshing}
                 />
                 
             </View>
@@ -73,7 +96,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(236, 240, 241,1.0)'
     },
     headerStyle: {
-        backgroundColor: '#34495e',
+        backgroundColor: '#2c3e50',
         flexDirection: 'row',
         justifyContent: 'space-between',
         padding: 10
