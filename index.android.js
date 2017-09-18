@@ -15,9 +15,6 @@ SplashScreen.close({
   delay: 500
 });
 
-
-
-
 const TabsNavigation = TabNavigator(
   {
     
