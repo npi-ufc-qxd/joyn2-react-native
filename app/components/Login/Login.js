@@ -3,9 +3,10 @@ import { AppRegistry, AsyncStorage, StyleSheet, View, Text, Image, StatusBar, To
 import axios from 'axios';
 import LoginForm from "./LoginForm";
 
-var STORAGE_KEY = 'id_token';
+import { STORAGE_KEY } from '../Constants';
 
 export default class Login extends Component {
+
 
   async doLogin(navigate, email, senha) {
     axios({
@@ -17,18 +18,12 @@ export default class Login extends Component {
       }
     }).then(function (response) {
 
-      //Configurar esse retorno, pois às vezes vem em response.data.token 
-      //console.log(response.headers.authorization);
-
-      try {
-        AsyncStorage.setItem(STORAGE_KEY, response.headers.authorization);
-      } catch (error) {
-        console.log('AsyncStorage error: ' + error.message);
-      }
+      var accesstoken = JSON.stringify(response.data.token);
+      accesstoken = accesstoken.replace(/['"]+/g, '');
+      AsyncStorage.setItem(STORAGE_KEY, accesstoken);
 
       ToastAndroid.showWithGravity('Login realizado com sucesso!', ToastAndroid.SHORT, ToastAndroid.CENTER);
       navigate('TabsNavigation');
-
     }).catch(function (error) {
       ToastAndroid.showWithGravity('Email e/ou Senha incorretos!', ToastAndroid.SHORT, ToastAndroid.CENTER);
     });

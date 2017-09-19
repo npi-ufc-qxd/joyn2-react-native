@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
-import { AppRegistry,View,Text, StyleSheet, FlatList } from 'react-native';
+import { AppRegistry,View,Text, StyleSheet, FlatList, AsyncStorage } from 'react-native';
 import Icon from "react-native-vector-icons/FontAwesome";
 
 import axios from 'axios';
+
+import { STORAGE_KEY } from '../Constants';
 
 export default class Ranking extends Component {
     static navigationOptions = {
@@ -31,19 +33,23 @@ export default class Ranking extends Component {
     }
 
     realizarRequest = () => {
-        var instance = axios.create({
-            baseURL: 'http://172.18.22.9:8080',
-            headers: {'Authorization': 'Joyn eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJpYW5rYUBnbWFpbC5jb20iLCJleHAiOjE1MDU3NjMyMTN9.q8kflCqSjFtL5ebwsWwzxf3u-XMa1ciGyI-ZbgGWlj6dspb4rQKuvtU6ntmeV6WlFP9OZmK0bcT_QNIxI_IPrg'}
-        }).get('/ranking/1')
-            .then(response => {
-                this.setState(
-                    {
-                        lista: response.data,
-                        refreshing: false
-                    }
-                ); 
-            })
-            .catch(() => {console.log("Erro ao recuperar os dados"); });
+        AsyncStorage.getItem(STORAGE_KEY).then((keyValue) => {
+            var instance = axios.create({
+                baseURL: 'http://172.18.22.9:8080',
+                headers: {'Authorization': keyValue}
+            }).get('/ranking/1')
+                .then(response => {
+                    this.setState(
+                        {
+                            lista: response.data,
+                            refreshing: false
+                        }
+                    ); 
+                })
+                .catch(() => {console.log("Erro ao recuperar os dados"); });
+        }, (error) => {
+            console.log(error.message);
+        });
     }
 
     atualizarRanking = () => {

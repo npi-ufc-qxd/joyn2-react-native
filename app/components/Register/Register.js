@@ -19,14 +19,10 @@ export default class Register extends Component {
             'Content-Type': 'application/json'
           }
         }).then(function (response) {
-    
-          if (response.data.codigo == 200) {
-            ToastAndroid.showWithGravity('Cadastro realizado com sucesso!', ToastAndroid.SHORT, ToastAndroid.CENTER);
-            return navigate("Login");
-          }
-    
-          ToastAndroid.showWithGravity('Algum erro ocorreu, tente novamente!', ToastAndroid.SHORT, ToastAndroid.CENTER);
+          ToastAndroid.showWithGravity('Cadastro realizado com sucesso!', ToastAndroid.SHORT, ToastAndroid.CENTER);
+          return navigate("Login");
         }).catch(function (error) {
+          ToastAndroid.showWithGravity('Algum erro ocorreu, tente novamente!', ToastAndroid.SHORT, ToastAndroid.CENTER);
           console.log(error.message);
         });
       } else {
