@@ -9,7 +9,7 @@ export default class Register extends Component {
       if (senha === confirmarSenha) {
         axios({
           method: 'post',
-          url: 'http://172.18.22.236:8080/cadastrar',
+          url: 'http://172.18.22.9:8080/cadastrar',
           data: {
             nome: nomeCompleto,
             email: email,

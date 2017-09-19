@@ -11,7 +11,7 @@ export default class Login extends Component {
   async doLogin(navigate, email, senha) {
     axios({
       method: 'post',
-      url: 'http://172.18.22.236:8080/login',
+      url: 'http://172.18.22.9:8080/login',
       data: {
         username: email,
         password: senha
