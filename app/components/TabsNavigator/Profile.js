@@ -5,11 +5,14 @@ import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity
+  TouchableOpacity,
+  ToastAndroid
 } from "react-native";
 import * as Animatable from "react-native-animatable";
 
 import Icon from "react-native-vector-icons/FontAwesome";
+
+import { STORAGE_KEY } from '../Constants';
 
 export default class Profile extends Component {
 
@@ -33,8 +36,18 @@ export default class Profile extends Component {
       .then((value)=>this.setState({'pontos': value}));
   }
   
+  async logout (navigate) {
+    try {
+      await AsyncStorage.removeItem(STORAGE_KEY);
+      ToastAndroid.showWithGravity('Logout realizado com sucesso!', ToastAndroid.SHORT, ToastAndroid.CENTER);
+      navigate('Login');
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
   render() {
-    
+    const { navigate } = this.props.navigation;
     return (
       <View style={styles.container}>
         <View style={styles.name}>
@@ -50,7 +63,7 @@ export default class Profile extends Component {
 
         <TouchableOpacity
           style={styles.buttonLogout}
-          onPress={() => alert("Saindo...")}
+          onPress={() => this.logout(navigate)}
         >
           <Text style={styles.buttonText}>Sair</Text>
         </TouchableOpacity>
