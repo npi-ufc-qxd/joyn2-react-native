@@ -12,7 +12,7 @@ import * as Animatable from "react-native-animatable";
 
 import Icon from "react-native-vector-icons/FontAwesome";
 
-import { STORAGE_KEY } from '../Constants';
+import { STORAGE_KEY, IP } from '../Constants';
 
 import axios from 'axios';
 
@@ -41,7 +41,7 @@ export default class Profile extends Component {
   componentWillMount(){
     AsyncStorage.getItem(STORAGE_KEY).then((keyValue) => {
       var instance = axios.create({
-          baseURL: 'http://172.18.22.9:8080',
+          baseURL: IP,
           headers: {'Authorization': keyValue}
       }).get('/usuario/1')
           .then(response => {
@@ -53,9 +53,9 @@ export default class Profile extends Component {
               ); 
           })
           .catch(() => {console.log("Erro ao recuperar os dados"); });
-  }, (error) => {
+    }, (error) => {
       console.log(error.message);
-  });
+    });
   }
   
   async logout (navigate) {

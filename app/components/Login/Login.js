@@ -3,15 +3,16 @@ import { AppRegistry, AsyncStorage, StyleSheet, View, Text, Image, StatusBar, To
 import axios from 'axios';
 import LoginForm from "./LoginForm";
 
-import { STORAGE_KEY } from '../Constants';
+import { STORAGE_KEY, IP} from '../Constants';
+
+var fazerLogin = 0;
 
 export default class Login extends Component {
-
 
   async doLogin(navigate, email, senha) {
     axios({
       method: 'post',
-      url: 'http://172.18.22.9:8080/login',
+      url: IP+'/login',
       data: {
         username: email,
         password: senha
