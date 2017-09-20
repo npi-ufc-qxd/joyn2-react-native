@@ -3,13 +3,15 @@ import { AppRegistry, StyleSheet, View, Text, Image, StatusBar, ToastAndroid } f
 import axios from 'axios';
 import RegisterForm from "./RegisterForm";
 
+import { IP } from '../Constants';
+
 export default class Register extends Component {
 
     doRegister(navigate, nomeCompleto, email, senha, confirmarSenha) {
       if (senha === confirmarSenha) {
         axios({
           method: 'post',
-          url: 'http://172.18.22.9:8080/cadastrar',
+          url: IP+'/cadastrar',
           data: {
             nome: nomeCompleto,
             email: email,

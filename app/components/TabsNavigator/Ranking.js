@@ -4,7 +4,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 
 import axios from 'axios';
 
-import { STORAGE_KEY } from '../Constants';
+import { STORAGE_KEY, IP } from '../Constants';
 
 export default class Ranking extends Component {
     static navigationOptions = {
@@ -35,7 +35,7 @@ export default class Ranking extends Component {
     realizarRequest = () => {
         AsyncStorage.getItem(STORAGE_KEY).then((keyValue) => {
             var instance = axios.create({
-                baseURL: 'http://172.18.22.9:8080',
+                baseURL: IP,
                 headers: {'Authorization': keyValue}
             }).get('/ranking/1')
                 .then(response => {

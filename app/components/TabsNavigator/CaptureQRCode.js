@@ -5,10 +5,14 @@ import {
   Text,
   StyleSheet,
   ToastAndroid,
-  TouchableOpacity
+  TouchableOpacity,
+  AsyncStorage
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import QRCodeScanner from "react-native-qrcode-scanner";
+import axios from 'axios';
+
+import { STORAGE_KEY, IP } from '../Constants';
 
 export default class CaptureQRCode extends Component {
   static navigationOptions = {
@@ -21,25 +25,53 @@ export default class CaptureQRCode extends Component {
       />
     )
   };
-  state = {
-    qrcodeValue: ""
-  };
+
+  constructor(props){
+    super(props);
+
+    this.state = {
+        qrcodeValue: '',
+        mensagem: ''
+    };
+}
 
   readQRCode(e) {
     this.setState({ qrcodeValue: e.data });
     ToastAndroid.showWithGravity('QRCode capturado!', ToastAndroid.SHORT, ToastAndroid.CENTER);
   }
+
   sendQRCodeToServer(){
-    //REGRA DE NEGOCIO
-    ToastAndroid.showWithGravity('Pontos Regastados!', ToastAndroid.SHORT, ToastAndroid.CENTER);
-    this.setState({qrcodeValue: ''})
+    AsyncStorage.getItem(STORAGE_KEY).then((keyValue) => {
+      axios({
+        method: 'post',
+        url: IP+'/resgatarqrcode',
+        data: {
+          codigo: this.state.qrcodeValue
+        },
+        headers :{
+          'Authorization': keyValue
+        }
+      }).then((response) => {
+        this.setState(
+          {
+              mensagem: response.data.mensagem
+          }
+        );
+        ToastAndroid.showWithGravity(this.state.mensagem, ToastAndroid.SHORT, ToastAndroid.CENTER);
+        this.setState({qrcodeValue: ''})
+      }).catch(function (error) {
+        ToastAndroid.showWithGravity('Erro ao capturar QRCode', ToastAndroid.SHORT, ToastAndroid.CENTER);
+      });
+    }, (error) => {
+      console.log(error.message);
+    });
   }
 
   render() {
     return (
       <View style={styles.container}>
         <QRCodeScanner
-          onRead={(e)=>this.readQRCode(e)}
+          onRead={(e) => this.readQRCode(e)}
           reactivate
           showMarker
           reactivateTimeout={1000}
@@ -57,8 +89,8 @@ export default class CaptureQRCode extends Component {
             (this.state.qrcodeValue!='') ?
                 <View style={styles.innerContainer}>
                 <TouchableOpacity
-                style={styles.buttonContainerRegister}
-                onPress={() => this.sendQRCodeToServer()}
+                  style={styles.buttonContainerRegister}
+                  onPress={() => this.sendQRCodeToServer()}
                 >
                 <Text style={styles.buttonText}>Resgatar Pontos</Text>
                 </TouchableOpacity>
