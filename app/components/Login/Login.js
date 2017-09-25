@@ -1,13 +1,47 @@
 import React, { Component } from "react";
 import { AppRegistry, AsyncStorage, StyleSheet, View, Text, Image, StatusBar, ToastAndroid } from "react-native";
+import Spinner from 'react-native-loading-spinner-overlay';
 import axios from 'axios';
 import LoginForm from "./LoginForm";
 
 import { STORAGE_KEY, IP} from '../Constants';
 
-var fazerLogin = 0;
-
 export default class Login extends Component {
+  constructor(props) {
+    super();
+
+    this.state = {
+      visible: false
+    };
+  }
+
+  componentWillMount(){
+    const { navigate } = this.props.navigation;
+
+    AsyncStorage.getItem(STORAGE_KEY).then((keyValue) => {
+      this.setState({
+        visible: !this.state.visible
+      });
+      var instance = axios.create({
+          baseURL: IP,
+          headers: {'Authorization': keyValue}
+      }).get('/api/token')
+          .then((response) => {
+            this.setState({
+              visible: false
+            });
+            navigate('TabsNavigation');
+          })
+        .catch((error) => {
+            this.setState({
+              visible: false
+            });
+            console.log("Token Inválido");
+        });
+    }, (error) => {
+      console.log(error.message);
+    });
+  }
 
   async doLogin(navigate, email, senha) {
     axios({
@@ -33,13 +67,13 @@ export default class Login extends Component {
   render() {
     const { navigate } = this.props.navigation;
     return (
-      
       <Image
         source={require("../../resources/images/login-bg.jpg")}
         style={styles.backgroundImage}
         blurRadius={1}
         resizeMode='cover'
       >
+      <Spinner visible={this.state.visible} textContent={"Validando suas informações..."} textStyle={{color: '#FFF'}} />
       <StatusBar
         backgroundColor="rgba(44, 62, 80,1.0)"
         barStyle="light-content"
