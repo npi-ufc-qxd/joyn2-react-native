@@ -12,7 +12,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import QRCodeScanner from "react-native-qrcode-scanner";
 import axios from 'axios';
 
-import { STORAGE_KEY, IP } from '../Constants';
+import { STORAGE_KEY, IP, PONTOS_KEY } from '../Constants';
 
 export default class CaptureQRCode extends Component {
   static navigationOptions = {
@@ -40,8 +40,9 @@ export default class CaptureQRCode extends Component {
     ToastAndroid.showWithGravity('QRCode capturado!', ToastAndroid.SHORT, ToastAndroid.CENTER);
   }
 
-  sendQRCodeToServer(){
+  async sendQRCodeToServer(){
     AsyncStorage.getItem(STORAGE_KEY).then((keyValue) => {
+      
       axios({
         method: 'post',
         url: IP+'/resgatarqrcode',
@@ -57,9 +58,13 @@ export default class CaptureQRCode extends Component {
               mensagem: response.data.mensagem
           }
         );
+        
+        AsyncStorage.setItem(PONTOS_KEY, JSON.stringify(response.data.pontos));
+
         ToastAndroid.showWithGravity(this.state.mensagem, ToastAndroid.SHORT, ToastAndroid.CENTER);
         this.setState({qrcodeValue: ''})
       }).catch(function (error) {
+        alert(error.message);
         ToastAndroid.showWithGravity('Erro ao capturar QRCode', ToastAndroid.SHORT, ToastAndroid.CENTER);
       });
     }, (error) => {
@@ -74,7 +79,7 @@ export default class CaptureQRCode extends Component {
           onRead={(e) => this.readQRCode(e)}
           reactivate
           showMarker
-          reactivateTimeout={1000}
+          reactivateTimeout={3000}
           topContent={
             <View style={styles.innerContainer}>
               <Text style={styles.titletext}>

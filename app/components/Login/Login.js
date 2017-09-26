@@ -4,7 +4,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import axios from 'axios';
 import LoginForm from "./LoginForm";
 
-import { STORAGE_KEY, IP} from '../Constants';
+import { STORAGE_KEY, IP, PONTOS_KEY, NOME_KEY } from '../Constants';
 
 export default class Login extends Component {
   constructor(props) {
@@ -22,24 +22,28 @@ export default class Login extends Component {
       this.setState({
         visible: !this.state.visible
       });
-      var instance = axios.create({
-          baseURL: IP,
-          headers: {'Authorization': keyValue}
-      }).get('/api/token')
-          .then((response) => {
-            this.setState({
-              visible: false
-            });
-            navigate('TabsNavigation');
-          })
-        .catch((error) => {
-            this.setState({
-              visible: false
-            });
-            console.log("Token Inválido");
+      axios({
+        method: 'post',
+        url: IP+'/testetoken',
+        data: {
+          token: keyValue
+        }
+      }).then((response) => {
+        this.setState({
+          visible: false
         });
+        navigate('TabsNavigation');
+      }).catch((error) => {
+        AsyncStorage.removeItem(STORAGE_KEY);
+        AsyncStorage.removeItem(PONTOS_KEY);
+        AsyncStorage.removeItem(NOME_KEY);
+        this.setState({
+          visible: false
+        });
+        console.log('Token inválido '+error.message);
+      });
     }, (error) => {
-      console.log(error.message);
+      console.log('Erro ao recuperar token no async '+error.message);
     });
   }
 
@@ -56,6 +60,17 @@ export default class Login extends Component {
       var accesstoken = JSON.stringify(response.data.token);
       accesstoken = accesstoken.replace(/['"]+/g, '');
       AsyncStorage.setItem(STORAGE_KEY, accesstoken);
+
+      axios({
+        method: 'get',
+        url: IP+'/usuario/1',
+        headers: {'Authorization': accesstoken}
+      }).then(function (response) {
+        AsyncStorage.setItem(PONTOS_KEY, JSON.stringify(response.data.pontos));
+        AsyncStorage.setItem(NOME_KEY, JSON.stringify(response.data.nome).replace(/['"]+/g, ''));
+      }).catch(function (error) {
+        console.log('Erro ao recuperar usuario '+error.message);
+      });
 
       ToastAndroid.showWithGravity('Login realizado com sucesso!', ToastAndroid.SHORT, ToastAndroid.CENTER);
       navigate('TabsNavigation');
