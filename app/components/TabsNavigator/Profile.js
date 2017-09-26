@@ -38,13 +38,24 @@ export default class Profile extends Component {
     };
   }
 
+  componentWillUpdate() {
+    AsyncStorage.getItem(PONTOS_KEY).then((pontosValue) => {
+      this.setState(
+        {
+            pontos: pontosValue
+        }
+      );
+    }, (error) => {
+      console.log('Erro ao recuperar pontos no async '+error.message);
+    });
+  }
+
   componentWillMount(){
     AsyncStorage.getItem(PONTOS_KEY).then((pontosValue) => {
       this.setState(
         {
             pontos: pontosValue
         }
-        
       );
     }, (error) => {
       console.log('Erro ao recuperar pontos no async '+error.message);
