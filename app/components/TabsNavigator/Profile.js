@@ -12,7 +12,7 @@ import * as Animatable from "react-native-animatable";
 
 import Icon from "react-native-vector-icons/FontAwesome";
 
-import { STORAGE_KEY, IP } from '../Constants';
+import { STORAGE_KEY, IP, PONTOS_KEY, NOME_KEY } from '../Constants';
 
 import axios from 'axios';
 
@@ -39,28 +39,33 @@ export default class Profile extends Component {
   }
 
   componentWillMount(){
-    AsyncStorage.getItem(STORAGE_KEY).then((keyValue) => {
-      var instance = axios.create({
-          baseURL: IP,
-          headers: {'Authorization': keyValue}
-      }).get('/usuario/1')
-          .then(response => {
-              this.setState(
-                  {
-                      nome: response.data.nome,
-                      pontos: response.data.pontos
-                  }
-              ); 
-          })
-          .catch(() => {console.log("Erro ao recuperar os dados"); });
+    AsyncStorage.getItem(PONTOS_KEY).then((pontosValue) => {
+      this.setState(
+        {
+            pontos: pontosValue
+        }
+        
+      );
     }, (error) => {
-      console.log(error.message);
+      console.log('Erro ao recuperar pontos no async '+error.message);
+    });
+
+    AsyncStorage.getItem(NOME_KEY).then((nomeValue) => {
+      this.setState(
+        {
+            nome: nomeValue
+        }
+      );
+    }, (error) => {
+      console.log('Erro ao recuperar nome no async '+error.message);
     });
   }
   
   async logout (navigate) {
     try {
       await AsyncStorage.removeItem(STORAGE_KEY);
+      await AsyncStorage.removeItem(PONTOS_KEY);
+      await AsyncStorage.removeItem(NOME_KEY);
       ToastAndroid.showWithGravity('Logout realizado com sucesso!', ToastAndroid.SHORT, ToastAndroid.CENTER);
       navigate('Login');
     } catch (error) {
