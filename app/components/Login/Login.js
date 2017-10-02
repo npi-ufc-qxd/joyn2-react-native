@@ -50,7 +50,7 @@ export default class Login extends Component {
   async doLogin(navigate, email, senha) {
     axios({
       method: 'post',
-      url: IP+'/login',
+      url: IP+'/logar',
       data: {
         username: email,
         password: senha
