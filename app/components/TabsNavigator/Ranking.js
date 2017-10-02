@@ -28,6 +28,10 @@ export default class Ranking extends Component {
         };
     }
 
+    componentWillUpdate() {
+        this.realizarRequest();
+    }
+
     componentWillMount(){
         this.realizarRequest();
     }
