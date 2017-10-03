@@ -1,0 +1,228 @@
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var _jsxFileName = "/home/breno.sousa/Documents/joyn2-react-native/app/components/TabsNavigator/CaptureQRCode.js";
+
+var _react = require("react");
+
+var _react2 = babelHelpers.interopRequireDefault(_react);
+
+var _reactNative = require("react-native");
+
+var _FontAwesome = require("react-native-vector-icons/FontAwesome");
+
+var _FontAwesome2 = babelHelpers.interopRequireDefault(_FontAwesome);
+
+var _reactNativeQrcodeScanner = require("react-native-qrcode-scanner");
+
+var _reactNativeQrcodeScanner2 = babelHelpers.interopRequireDefault(_reactNativeQrcodeScanner);
+
+var _axios = require("axios");
+
+var _axios2 = babelHelpers.interopRequireDefault(_axios);
+
+var _Constants = require("../Constants");
+
+var regeneratorRuntime = require("regenerator-runtime");
+
+var CaptureQRCode = function (_Component) {
+  babelHelpers.inherits(CaptureQRCode, _Component);
+
+  function CaptureQRCode(props) {
+    babelHelpers.classCallCheck(this, CaptureQRCode);
+
+    var _this = babelHelpers.possibleConstructorReturn(this, (CaptureQRCode.__proto__ || Object.getPrototypeOf(CaptureQRCode)).call(this, props));
+
+    _this.state = {
+      qrcodeValue: '',
+      mensagem: ''
+    };
+    return _this;
+  }
+
+  babelHelpers.createClass(CaptureQRCode, [{
+    key: "readQRCode",
+    value: function readQRCode(e) {
+      this.setState({ qrcodeValue: e.data });
+      _reactNative.ToastAndroid.showWithGravity('QRCode capturado!', _reactNative.ToastAndroid.SHORT, _reactNative.ToastAndroid.CENTER);
+    }
+  }, {
+    key: "sendQRCodeToServer",
+    value: function sendQRCodeToServer() {
+      var _this2 = this;
+
+      return regeneratorRuntime.async(function sendQRCodeToServer$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              _reactNative.AsyncStorage.getItem(_Constants.STORAGE_KEY).then(function (keyValue) {
+
+                (0, _axios2.default)({
+                  method: 'post',
+                  url: _Constants.IP + '/resgatarqrcode',
+                  data: {
+                    codigo: _this2.state.qrcodeValue
+                  },
+                  headers: {
+                    'Authorization': keyValue,
+                    'Content-Type': 'application/json'
+                  }
+                }).then(function (response) {
+                  _this2.setState({
+                    mensagem: response.data.mensagem
+                  });
+
+                  _reactNative.AsyncStorage.setItem(_Constants.PONTOS_KEY, JSON.stringify(response.data.pontos));
+
+                  _reactNative.ToastAndroid.showWithGravity(_this2.state.mensagem, _reactNative.ToastAndroid.SHORT, _reactNative.ToastAndroid.CENTER);
+                  _this2.setState({ qrcodeValue: '' });
+                }).catch(function (error) {
+                  alert(error.message);
+                  _reactNative.ToastAndroid.showWithGravity('Erro ao capturar QRCode', _reactNative.ToastAndroid.SHORT, _reactNative.ToastAndroid.CENTER);
+                });
+              }, function (error) {
+                console.log(error.message);
+              });
+
+            case 1:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, null, this);
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var _this3 = this;
+
+      return _react2.default.createElement(
+        _reactNative.View,
+        { style: styles.container, __source: {
+            fileName: _jsxFileName,
+            lineNumber: 78
+          }
+        },
+        _react2.default.createElement(_reactNativeQrcodeScanner2.default, {
+          onRead: function onRead(e) {
+            return _this3.readQRCode(e);
+          },
+          reactivate: true,
+          showMarker: true,
+          reactivateTimeout: 3000,
+          topContent: _react2.default.createElement(
+            _reactNative.View,
+            { style: styles.innerContainer, __source: {
+                fileName: _jsxFileName,
+                lineNumber: 85
+              }
+            },
+            _react2.default.createElement(
+              _reactNative.Text,
+              { style: styles.titletext, __source: {
+                  fileName: _jsxFileName,
+                  lineNumber: 86
+                }
+              },
+              "Aponte para um dos QRCodes espalhados e capture os pontos!"
+            ),
+            _react2.default.createElement(
+              _reactNative.Text,
+              { style: styles.simpleText, __source: {
+                  fileName: _jsxFileName,
+                  lineNumber: 89
+                }
+              },
+              "Ao ler o QRCode aparecer\xE1 um bot\xE3o para resgatar os pontos."
+            )
+          ),
+          bottomContent: this.state.qrcodeValue != '' ? _react2.default.createElement(
+            _reactNative.View,
+            { style: styles.innerContainer, __source: {
+                fileName: _jsxFileName,
+                lineNumber: 96
+              }
+            },
+            _react2.default.createElement(
+              _reactNative.TouchableOpacity,
+              {
+                style: styles.buttonContainerRegister,
+                onPress: function onPress() {
+                  return _this3.sendQRCodeToServer();
+                },
+                __source: {
+                  fileName: _jsxFileName,
+                  lineNumber: 97
+                }
+              },
+              _react2.default.createElement(
+                _reactNative.Text,
+                { style: styles.buttonText, __source: {
+                    fileName: _jsxFileName,
+                    lineNumber: 101
+                  }
+                },
+                "Resgatar Pontos"
+              )
+            )
+          ) : '',
+          __source: {
+            fileName: _jsxFileName,
+            lineNumber: 79
+          }
+        })
+      );
+    }
+  }]);
+  return CaptureQRCode;
+}(_react.Component);
+
+CaptureQRCode.navigationOptions = {
+  tabBarLabel: "Capturar QRCode",
+  tabBarIcon: function tabBarIcon(_ref) {
+    var focused = _ref.focused;
+    return _react2.default.createElement(_FontAwesome2.default, {
+      name: "qrcode",
+      size: 30,
+      color: focused ? "rgba(44, 62, 80,1.0)" : "rgba(52, 73, 94,0.4)",
+      __source: {
+        fileName: _jsxFileName,
+        lineNumber: 21
+      }
+    });
+  }
+};
+exports.default = CaptureQRCode;
+
+
+var styles = _reactNative.StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'rgba(236, 240, 241,1.0)'
+  },
+  innerContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20
+  },
+  titletext: {
+    fontSize: 20,
+    fontWeight: "100",
+    textAlign: "center"
+  },
+  simpleText: {
+    textAlign: 'center'
+  },
+  buttonContainerRegister: {
+    backgroundColor: "rgba(52, 73, 94,1.0)",
+    padding: 15,
+    borderRadius: 5
+  },
+  buttonText: {
+    textAlign: "center",
+    color: "white",
+    fontWeight: "700"
+  }
+});
+
+_reactNative.AppRegistry.registerComponent("CaptureQRCode", CaptureQRCode);
