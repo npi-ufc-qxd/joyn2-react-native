@@ -50,7 +50,8 @@ export default class CaptureQRCode extends Component {
           codigo: this.state.qrcodeValue
         },
         headers :{
-          'Authorization': keyValue
+          'Authorization': keyValue,
+          'Content-Type': 'application/json'
         }
       }).then((response) => {
         this.setState(
@@ -64,8 +65,11 @@ export default class CaptureQRCode extends Component {
         ToastAndroid.showWithGravity(this.state.mensagem, ToastAndroid.SHORT, ToastAndroid.CENTER);
         this.setState({qrcodeValue: ''})
       }).catch(function (error) {
-        alert(error.message);
-        ToastAndroid.showWithGravity('Erro ao capturar QRCode', ToastAndroid.SHORT, ToastAndroid.CENTER);
+        if(error.status == 409){
+          ToastAndroid.showWithGravity('Capture o código de Checkin antes!', ToastAndroid.SHORT, ToastAndroid.CENTER);
+        } else {
+          ToastAndroid.showWithGravity('QRCode inválido!', ToastAndroid.SHORT, ToastAndroid.CENTER);
+        }
       });
     }, (error) => {
       console.log(error.message);

@@ -1,0 +1,233 @@
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var _jsxFileName = '/home/breno.sousa/Documents/joyn2-react-native/app/components/TabsNavigator/Ranking.js';
+
+var _react = require('react');
+
+var _react2 = babelHelpers.interopRequireDefault(_react);
+
+var _reactNative = require('react-native');
+
+var _FontAwesome = require('react-native-vector-icons/FontAwesome');
+
+var _FontAwesome2 = babelHelpers.interopRequireDefault(_FontAwesome);
+
+var _axios = require('axios');
+
+var _axios2 = babelHelpers.interopRequireDefault(_axios);
+
+var _Constants = require('../Constants');
+
+var Ranking = function (_Component) {
+    babelHelpers.inherits(Ranking, _Component);
+
+    function Ranking(props) {
+        babelHelpers.classCallCheck(this, Ranking);
+
+        var _this = babelHelpers.possibleConstructorReturn(this, (Ranking.__proto__ || Object.getPrototypeOf(Ranking)).call(this, props));
+
+        _this.realizarRequest = function () {
+            _reactNative.AsyncStorage.getItem(_Constants.STORAGE_KEY).then(function (keyValue) {
+                var instance = _axios2.default.create({
+                    baseURL: _Constants.IP,
+                    headers: { 'Authorization': keyValue, 'Content-Type': 'application/json' }
+                }).get('/ranking/' + _Constants.ID_EVENTO).then(function (response) {
+                    _this.setState({
+                        lista: response.data,
+                        refreshing: false
+                    });
+                }).catch(function () {
+                    console.log("Erro ao recuperar os dados");
+                });
+            }, function (error) {
+                console.log(error.message);
+            });
+        };
+
+        _this.atualizarRanking = function () {
+            _this.setState({
+                seed: _this.state.seed + 1,
+                refreshing: true
+            }, function () {
+                _this.realizarRequest();
+            });
+        };
+
+        _this.renderHeader = function () {
+            return _react2.default.createElement(
+                _reactNative.View,
+                { style: styles.headerStyle, __source: {
+                        fileName: _jsxFileName,
+                        lineNumber: 72
+                    }
+                },
+                _react2.default.createElement(
+                    _reactNative.Text,
+                    { style: styles.txtHeader, __source: {
+                            fileName: _jsxFileName,
+                            lineNumber: 73
+                        }
+                    },
+                    'Coloca\xE7\xE3o'
+                ),
+                _react2.default.createElement(
+                    _reactNative.Text,
+                    { style: styles.txtHeader, __source: {
+                            fileName: _jsxFileName,
+                            lineNumber: 74
+                        }
+                    },
+                    'Nome'
+                ),
+                _react2.default.createElement(
+                    _reactNative.Text,
+                    { style: styles.txtHeader, __source: {
+                            fileName: _jsxFileName,
+                            lineNumber: 75
+                        }
+                    },
+                    'Pontua\xE7\xE3o'
+                )
+            );
+        };
+
+        _this.state = {
+            lista: [],
+            seed: 1,
+            refreshing: false
+        };
+        return _this;
+    }
+
+    babelHelpers.createClass(Ranking, [{
+        key: 'componentWillUpdate',
+        value: function componentWillUpdate() {
+            this.realizarRequest();
+        }
+    }, {
+        key: 'componentWillMount',
+        value: function componentWillMount() {
+            this.realizarRequest();
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            return _react2.default.createElement(
+                _reactNative.View,
+                { style: styles.container, __source: {
+                        fileName: _jsxFileName,
+                        lineNumber: 82
+                    }
+                },
+                _react2.default.createElement(_reactNative.FlatList, {
+                    data: this.state.lista,
+                    renderItem: function renderItem(_ref) {
+                        var item = _ref.item;
+                        return _react2.default.createElement(
+                            _reactNative.View,
+                            { style: styles.viewList, __source: {
+                                    fileName: _jsxFileName,
+                                    lineNumber: 86
+                                }
+                            },
+                            _react2.default.createElement(
+                                _reactNative.Text,
+                                { style: styles.listTxt, __source: {
+                                        fileName: _jsxFileName,
+                                        lineNumber: 87
+                                    }
+                                },
+                                item.colocacao,
+                                '\xBA'
+                            ),
+                            _react2.default.createElement(
+                                _reactNative.Text,
+                                { style: [styles.listTxt, { fontWeight: 'bold' }], __source: {
+                                        fileName: _jsxFileName,
+                                        lineNumber: 88
+                                    }
+                                },
+                                item.nome
+                            ),
+                            _react2.default.createElement(
+                                _reactNative.Text,
+                                { style: styles.listTxt, __source: {
+                                        fileName: _jsxFileName,
+                                        lineNumber: 89
+                                    }
+                                },
+                                item.pontos
+                            )
+                        );
+                    },
+                    keyExtractor: function keyExtractor(item) {
+                        return item.colocacao;
+                    },
+                    ListHeaderComponent: this.renderHeader,
+                    onRefresh: this.atualizarRanking,
+                    refreshing: this.state.refreshing,
+                    __source: {
+                        fileName: _jsxFileName,
+                        lineNumber: 83
+                    }
+                })
+            );
+        }
+    }]);
+    return Ranking;
+}(_react.Component);
+
+Ranking.navigationOptions = {
+    tabBarLabel: "Ranking",
+    tabBarIcon: function tabBarIcon(_ref2) {
+        var focused = _ref2.focused;
+        return _react2.default.createElement(_FontAwesome2.default, {
+            name: 'trophy',
+            size: 30,
+            color: focused ? "rgba(44, 62, 80,1.0)" : "rgba(52, 73, 94,0.4)",
+            __source: {
+                fileName: _jsxFileName,
+                lineNumber: 13
+            }
+        });
+    }
+};
+exports.default = Ranking;
+
+
+var styles = _reactNative.StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: 'rgba(236, 240, 241,1.0)'
+    },
+    headerStyle: {
+        backgroundColor: '#2c3e50',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        padding: 10
+    },
+    txtHeader: {
+        fontSize: 18,
+        color: '#fff'
+    },
+    txtRanking: {
+        fontSize: 20,
+        color: '#fff',
+        textAlign: 'center',
+        fontWeight: 'bold'
+    },
+    viewList: {
+        flex: 1,
+        padding: 20,
+        borderBottomWidth: 1,
+        borderColor: "#CCC",
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+    },
+    listTxt: {
+        fontSize: 15
+    }
+});
+
+_reactNative.AppRegistry.registerComponent("Ranking", Ranking);

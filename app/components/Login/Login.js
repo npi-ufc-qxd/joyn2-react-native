@@ -4,7 +4,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import axios from 'axios';
 import LoginForm from "./LoginForm";
 
-import { STORAGE_KEY, IP, PONTOS_KEY, NOME_KEY } from '../Constants';
+import { STORAGE_KEY, IP, PONTOS_KEY, NOME_KEY, ID_EVENTO } from '../Constants';
 
 export default class Login extends Component {
   constructor(props) {
@@ -48,13 +48,19 @@ export default class Login extends Component {
   }
 
   async doLogin(navigate, email, senha) {
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED='0';
     axios({
       method: 'post',
       url: IP+'/logar',
       data: {
         username: email,
         password: senha
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept':'application/json'
       }
+
     }).then(function (response) {
 
       var accesstoken = JSON.stringify(response.data.token);
@@ -63,8 +69,11 @@ export default class Login extends Component {
 
       axios({
         method: 'get',
-        url: IP+'/usuario/1',
-        headers: {'Authorization': accesstoken}
+        url: IP+'/usuario/'+ID_EVENTO,
+        headers: {
+          'Authorization': accesstoken,
+          'Content-Type': 'application/json'
+        }
       }).then(function (response) {
         AsyncStorage.setItem(PONTOS_KEY, JSON.stringify(response.data.pontos));
         AsyncStorage.setItem(NOME_KEY, JSON.stringify(response.data.nome).replace(/['"]+/g, ''));
@@ -75,6 +84,7 @@ export default class Login extends Component {
       ToastAndroid.showWithGravity('Login realizado com sucesso!', ToastAndroid.SHORT, ToastAndroid.CENTER);
       navigate('TabsNavigation');
     }).catch(function (error) {
+      console.log(error);
       ToastAndroid.showWithGravity('Email e/ou Senha incorretos!', ToastAndroid.SHORT, ToastAndroid.CENTER);
     });
   }
