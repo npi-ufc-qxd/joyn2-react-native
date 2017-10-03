@@ -37,3 +37,5 @@ buck-out/
 \.buckd/
 android/app/libs
 android/keystores/debug.keystore
+
+react-native-packager-cache-55b9fc1d28acea1d397326edeba73fa7995237f9/
