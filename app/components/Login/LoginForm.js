@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Text
 } from "react-native";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 export default class LoginForm extends Component {
   
@@ -58,6 +59,18 @@ export default class LoginForm extends Component {
         >
           <Text style={styles.buttonText}>Cadastrar</Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.buttonContainerFacebook}
+          onPress={() => false}
+        >
+          <Icon 
+            name="facebook"
+            size={20} 
+            style={styles.iconStyle}
+          />
+          <Text style={styles.buttonText}>Entrar com Facebook</Text>
+        </TouchableOpacity>
+
       </View>
     );
   }
@@ -85,7 +98,19 @@ const styles = StyleSheet.create({
   buttonContainerRegister: {
     backgroundColor: "rgba(52, 73, 94,1.0)",
     paddingVertical: 15,
-    borderRadius: 5
+    borderRadius: 5,
+    marginBottom: 10
+  },
+  buttonContainerFacebook: {
+    backgroundColor: "rgba(59,89,152,1.0)",
+    paddingVertical: 15,
+    borderRadius: 5,
+    flexDirection: "row",
+    justifyContent: 'center'
+  },
+  iconStyle: {
+    color: "white",
+    marginRight: 20
   },
   buttonText: {
     textAlign: "center",

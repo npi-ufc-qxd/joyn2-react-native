@@ -8,6 +8,7 @@ import Register from "./app/components/Register/Register";
 import CaptureQRCode from "./app/components/TabsNavigator/CaptureQRCode"
 import Profile from "./app/components/TabsNavigator/Profile"
 import Ranking from "./app/components/TabsNavigator/Ranking"
+import Faq from "./app/components/TabsNavigator/Faq";
 
 SplashScreen.close({
   animationType: SplashScreen.animationType.scale,
@@ -21,6 +22,7 @@ const TabsNavigation = TabNavigator(
     Profile: {screen: Profile},
     CaptureQRCode: {screen: CaptureQRCode},
     Ranking: {screen: Ranking},
+    Faq:{screen: Faq},
   },
   {
     initialRouteName: "CaptureQRCode",

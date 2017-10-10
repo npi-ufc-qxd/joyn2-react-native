@@ -65,7 +65,7 @@ export default class CaptureQRCode extends Component {
         ToastAndroid.showWithGravity(this.state.mensagem, ToastAndroid.SHORT, ToastAndroid.CENTER);
         this.setState({qrcodeValue: ''})
       }).catch(function (error) {
-        if(error.status == 409){
+        if(error.response.status == '409'){
           ToastAndroid.showWithGravity('Capture o código de Checkin antes!', ToastAndroid.SHORT, ToastAndroid.CENTER);
         } else {
           ToastAndroid.showWithGravity('QRCode inválido!', ToastAndroid.SHORT, ToastAndroid.CENTER);
