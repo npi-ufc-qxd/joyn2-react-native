@@ -12,7 +12,7 @@ import {
 import Icon from "react-native-vector-icons/FontAwesome";
 import Accordion from 'react-native-collapsible/Accordion';
 
-const perguntas = [
+const questions = [
   {
     title: 'O que é o Joyn?',
     content: 'É um aplicativo para dispositivos móveis com o objetivo de "gamificar" os eventos da UFC-Quixadá, '+
@@ -30,9 +30,9 @@ const perguntas = [
     ' Existem dois tipos de atividade: CheckIn e CheckIn_CheckOut. Uma atividade do tipo CheckIn é aquela'+
     ' na qual você deverá capturar somente um QR-Code, já uma atividade do tipo CheckIn_CheckOut você deverá'+
     ' capturar dois ou mais QR-Codes (Depende da duração da atividade, por exemplo uma atividade com duração'+
-    ' de dois dias terá quatro QR-Codes), um no início e o outro no fim da atividade, esse tipo de atividade'+
+    ' de dois dias terá quatro QR-Codes) um no início e o outro no fim da atividade, cada atividade'+
     ' possue uma quantidade mínima de frequência que deve ser concluída de acordo com a quantidade de QR-Codes da mesma.'+
-    ' Deste modo, se você concluir essa quantidade mínima de frequência especificada você irá receber presença nessa atividade.',
+    ' Deste modo, se você concluir essa quantidade mínima de frequência especificada você irá receber presença na atividade.',
   },
   {
     title:'Como pontuar no Joyn/nas atividades?',
@@ -68,18 +68,18 @@ export default class Faq extends Component {
     };
   }
 
-  _renderHeader(pergunta) {
+  _renderHeader(question) {
     return (
-      <View style={styles.header}>
-        <Text style={styles.textoTitulo}>{pergunta.title}</Text>
+      <View >
+        <Text style={styles.textTititle}>{question.title}</Text>
       </View>
     );
   }
  
-  _renderContent(pergunta) {
+  _renderContent(question) {
     return (
-      <View style={styles.header}>
-        <Text style={styles.textoPergunta}>{pergunta.content}</Text>
+      <View>
+        <Text style={styles.textQuestion}>{question.content}</Text>
       </View>
     );
   }
@@ -87,22 +87,14 @@ export default class Faq extends Component {
   render() {
     const { navigate } = this.props.navigation;
     return (
-        // <Image
-        //   source={require("../../resources/images/login-bg.jpg")}
-        //   style={styles.backgroundImage}
-        //   blurRadius={1}
-        //   resizeMode='cover'
-        // >
-        // <StatusBar
-        //   backgroundColor="rgba(44, 62, 80,1.0)"
-        //   barStyle="light-content"
-        // />
-        // </Image>
-        <Accordion
-          sections={perguntas}
-          renderHeader={this._renderHeader}
-          renderContent={this._renderContent}
-        />
+        <View style={styles.header} >
+          <Accordion
+            sections={questions}
+            renderHeader={this._renderHeader}
+            renderContent={this._renderContent}
+            underlayColor={'#ecf0f1'}            
+          />
+        </View>
     );
   }
 }
@@ -115,31 +107,32 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center"
   },
-
   logoContainer: {
     flexGrow: 1,
     justifyContent: "center",
     alignItems: "center"
   },
-  textoTitulo: {
+  textTititle: {
     color: "black",
     marginTop: 10,
     marginLeft: 20,
     fontSize: 18,
     fontWeight: "bold",
   },
-  textoPergunta: {
+  textQuestion: {
     color: "black",
-    marginTop: 10,
+    marginTop: 20,
     marginLeft: 20,
     marginRight: 20,
     fontSize: 18,
-    opacity: 0.7
+    textAlign: 'justify',
+    opacity: 0.8
   },
   header:{
-    marginTop: 10
-  },
-  formContainer: {}
+    flex: 1,
+    marginTop: 10,
+    backgroundColor: '#fff'
+  }
 });
 
 AppRegistry.registerComponent("Faq", Faq);
