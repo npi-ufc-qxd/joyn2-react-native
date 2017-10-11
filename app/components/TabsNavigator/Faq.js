@@ -37,7 +37,7 @@ const questions = [
   {
     title:'Como pontuar no Joyn/nas atividades?',
     content:'Para pontuar em uma atividade é necessário que você obtenha presença na mesma. Deste modo,'+
-    ' como explicado no item anterior(3) é necessário capturar uma quantidade mínima de QR-Codes que está'+
+    ' como explicado no item anterior é necessário capturar uma quantidade mínima de QR-Codes que está'+
     ' diretamente relacionada a frequência da atividade.',
   },
   {
@@ -114,10 +114,13 @@ const styles = StyleSheet.create({
   },
   textTititle: {
     color: "black",
+    height: 50,
     marginTop: 10,
     marginLeft: 20,
     fontSize: 18,
     fontWeight: "bold",
+    textAlign: 'justify',
+    backgroundColor: "#F2F2F2"
   },
   textQuestion: {
     color: "black",
