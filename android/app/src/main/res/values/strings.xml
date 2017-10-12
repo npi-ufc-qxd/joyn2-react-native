@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Joyn</string>
+    <string name="facebook_app_id">289926091390359</string>
+    <string name="fb_login_protocol_scheme">fb289926091390359</string>
 </resources>
