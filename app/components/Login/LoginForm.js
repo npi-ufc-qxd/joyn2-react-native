@@ -61,7 +61,7 @@ export default class LoginForm extends Component {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.buttonContainerFacebook}
-          onPress={() => false}
+          onPress={()=>this.props.fbAuth()}
         >
           <Icon 
             name="facebook"

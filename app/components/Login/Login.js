@@ -6,6 +6,8 @@ import LoginForm from "./LoginForm";
 
 import { STORAGE_KEY, IP, PONTOS_KEY, NOME_KEY, ID_EVENTO } from '../Constants';
 
+import FBSDK, {LoginManager,LoginButton,GraphRequest,GraphRequestManager,AccessToken} from 'react-native-fbsdk';
+
 export default class Login extends Component {
   constructor(props) {
     super();
@@ -89,6 +91,52 @@ export default class Login extends Component {
     });
   }
 
+
+  _fbAuth(){
+    LoginManager
+    .logInWithReadPermissions(['public_profile,email'])
+    .then(function (result) {
+      if (result.isCancelled) {
+        alert('Login cancelado pelo usuário');
+      } else {
+          console.log(result)
+          AccessToken.getCurrentAccessToken().then(
+            (data) => {
+              let accessToken = data.accessToken
+
+              const responseInfoCallback = (error, result) => {
+                if (error) {
+                  console.log(error)
+                } else {
+                  console.log(result)
+                }
+              }
+
+              const infoRequest = new GraphRequest(
+                '/me',
+                {
+                  accessToken: accessToken,
+                  parameters: {
+                    fields: {
+                      string: 'email,name'
+                    }
+                  }
+                },
+                responseInfoCallback
+              );
+
+              // Start the graph request.
+              new GraphRequestManager().addRequest(infoRequest).start()
+
+            }
+          )
+
+    } 
+  }, function (error) {
+    alert('Ocorreu um erro no login: ' + error);
+   });
+  }
+
   render() {
     const { navigate } = this.props.navigation;
     return (
@@ -109,9 +157,11 @@ export default class Login extends Component {
             style={styles.logo}
           />
         </View>
+        
         <View style={styles.formContainer}>
-          <LoginForm navigate={navigate} doLogin={this.doLogin} />
+          <LoginForm navigate={navigate} doLogin={this.doLogin} fbAuth={this._fbAuth} />
         </View>
+        
       </Image>
     );
   }
@@ -140,7 +190,10 @@ const styles = StyleSheet.create({
     marginTop: 10,
     opacity: 0.7
   },
-  formContainer: {}
+  formContainer: {
+    alignItems: "center",
+    marginBottom: 20,
+  },
 });
 
 AppRegistry.registerComponent("Login", Login);
