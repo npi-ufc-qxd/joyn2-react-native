@@ -61,7 +61,7 @@ export default class LoginForm extends Component {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.buttonContainerFacebook}
-          onPress={()=>this.props.fbAuth()}
+          onPress={()=>this.props.fbAuth(navigate)}
         >
           <Icon 
             name="facebook"
@@ -69,6 +69,18 @@ export default class LoginForm extends Component {
             style={styles.iconStyle}
           />
           <Text style={styles.buttonText}>Entrar com Facebook</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.buttonContainerFacebook}
+          onPress={()=>this.props.fbLogout()}
+        >
+          <Icon 
+            name="facebook"
+            size={20} 
+            style={styles.iconStyle}
+          />
+          <Text style={styles.buttonText}>Sair do Facebook</Text>
         </TouchableOpacity>
 
       </View>
@@ -106,7 +118,8 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     borderRadius: 5,
     flexDirection: "row",
-    justifyContent: 'center'
+    justifyContent: 'center',
+    marginBottom: 10
   },
   iconStyle: {
     color: "white",
