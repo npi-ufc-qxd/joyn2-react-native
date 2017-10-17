@@ -70,19 +70,6 @@ export default class LoginForm extends Component {
           />
           <Text style={styles.buttonText}>Entrar com Facebook</Text>
         </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.buttonContainerFacebook}
-          onPress={()=>this.props.fbLogout()}
-        >
-          <Icon 
-            name="facebook"
-            size={20} 
-            style={styles.iconStyle}
-          />
-          <Text style={styles.buttonText}>Sair do Facebook</Text>
-        </TouchableOpacity>
-
       </View>
     );
   }

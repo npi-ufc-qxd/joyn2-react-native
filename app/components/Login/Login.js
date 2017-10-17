@@ -109,7 +109,7 @@ export default class Login extends Component {
                   console.log(error);
                 } else {
                   console.log(result);
-                  
+
                   axios({
                     method: 'post',
                     url: IP+'/logarfacebook',
@@ -176,11 +176,6 @@ export default class Login extends Component {
    });
   }
 
-  _fbLogout(){
-    LoginManager.logOut();
-    console.log("Logout");
-  }
-
   render() {
     const { navigate } = this.props.navigation;
     return (
@@ -203,7 +198,7 @@ export default class Login extends Component {
         </View>
         
         <View style={styles.formContainer}>
-          <LoginForm navigate={navigate} doLogin={this.doLogin} fbAuth={this._fbAuth} fbLogout={this._fbLogout} />
+          <LoginForm navigate={navigate} doLogin={this.doLogin} fbAuth={this._fbAuth} />
         </View>
         
       </Image>
