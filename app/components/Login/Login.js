@@ -123,7 +123,6 @@ export default class Login extends Component {
                       'Content-Type': 'application/json'
                     }
                   }).then(function (response){
-                    console.log("Axios 1 - Then");
                     var accesstoken = JSON.stringify(response.data.token);
                     accesstoken = accesstoken.replace(/['"]+/g, '');
                     AsyncStorage.setItem(STORAGE_KEY, accesstoken);
@@ -136,7 +135,6 @@ export default class Login extends Component {
                         'Content-Type': 'application/json'
                       }
                     }).then(function (response) {
-                      console.log("Axios 2 - Then");
                       AsyncStorage.setItem(PONTOS_KEY, JSON.stringify(response.data.pontos));
                       AsyncStorage.setItem(NOME_KEY, JSON.stringify(response.data.nome).replace(/['"]+/g, ''));
                     }).catch(function (error) {
