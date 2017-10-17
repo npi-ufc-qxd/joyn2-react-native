@@ -16,6 +16,8 @@ import { STORAGE_KEY, IP, PONTOS_KEY, NOME_KEY } from '../Constants';
 
 import axios from 'axios';
 
+import FBSDK, {LoginManager} from 'react-native-fbsdk';
+
 export default class Profile extends Component {
 
   static navigationOptions = {
@@ -77,6 +79,7 @@ export default class Profile extends Component {
       await AsyncStorage.removeItem(STORAGE_KEY);
       await AsyncStorage.removeItem(PONTOS_KEY);
       await AsyncStorage.removeItem(NOME_KEY);
+      LoginManager.logOut();
       ToastAndroid.showWithGravity('Logout realizado com sucesso!', ToastAndroid.SHORT, ToastAndroid.CENTER);
       navigate('Login');
     } catch (error) {

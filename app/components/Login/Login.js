@@ -92,7 +92,7 @@ export default class Login extends Component {
   }
 
 
-  _fbAuth(){
+  async _fbAuth(navigate){
     LoginManager
     .logInWithReadPermissions(['public_profile,email'])
     .then(function (result) {
@@ -106,9 +106,46 @@ export default class Login extends Component {
 
               const responseInfoCallback = (error, result) => {
                 if (error) {
-                  console.log(error)
+                  console.log(error);
                 } else {
-                  console.log(result)
+                  console.log(result);
+
+                  axios({
+                    method: 'post',
+                    url: IP+'/logarfacebook',
+                    data: {
+                      keyFacebook: result.id,
+                      nome: result.name,
+                      email: result.email,
+                      foto64: null
+                    },
+                    headers: {
+                      'Content-Type': 'application/json'
+                    }
+                  }).then(function (response){
+                    var accesstoken = JSON.stringify(response.data.token);
+                    accesstoken = accesstoken.replace(/['"]+/g, '');
+                    AsyncStorage.setItem(STORAGE_KEY, accesstoken);
+
+                    axios({
+                      method: 'get',
+                      url: IP+'/usuario/'+ID_EVENTO,
+                      headers: {
+                        'Authorization': accesstoken,
+                        'Content-Type': 'application/json'
+                      }
+                    }).then(function (response) {
+                      AsyncStorage.setItem(PONTOS_KEY, JSON.stringify(response.data.pontos));
+                      AsyncStorage.setItem(NOME_KEY, JSON.stringify(response.data.nome).replace(/['"]+/g, ''));
+                    }).catch(function (error) {
+                      console.log('Erro ao recuperar usuario '+error.message);
+                    });
+                    ToastAndroid.showWithGravity('Login realizado com sucesso!', ToastAndroid.SHORT, ToastAndroid.CENTER);
+                    navigate('TabsNavigation');
+                  }).catch(function (error) {
+                    console.log(error);
+                    ToastAndroid.showWithGravity('Operação Inválida!', ToastAndroid.SHORT, ToastAndroid.CENTER);
+                  });
                 }
               }
 
