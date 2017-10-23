@@ -62,7 +62,7 @@ export default class CaptureQRCode extends Component {
         
         AsyncStorage.setItem(PONTOS_KEY, JSON.stringify(response.data.pontos));
 
-        ToastAndroid.showWithGravity(this.state.mensagem, ToastAndroid.SHORT, ToastAndroid.CENTER);
+        ToastAndroid.showWithGravity(this.state.mensagem, ToastAndroid.LONG, ToastAndroid.CENTER);
         this.setState({qrcodeValue: ''})
       }).catch(function (error) {
         if(error.response.status == '409'){
@@ -83,7 +83,7 @@ export default class CaptureQRCode extends Component {
           onRead={(e) => this.readQRCode(e)}
           reactivate
           showMarker
-          reactivateTimeout={4000}
+          reactivateTimeout={3500}
           topContent={
             <View style={styles.innerContainer}>
               <Text style={styles.titletext}>
