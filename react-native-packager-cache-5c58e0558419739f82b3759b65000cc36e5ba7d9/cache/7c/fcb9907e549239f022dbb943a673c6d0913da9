@@ -1,0 +1,275 @@
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var _jsxFileName = "/home/silvino.neto/Documentos/joyn2-react-native/app/components/TabsNavigator/Profile.js";
+
+var _react = require("react");
+
+var _react2 = babelHelpers.interopRequireDefault(_react);
+
+var _reactNative = require("react-native");
+
+var _reactNativeAnimatable = require("react-native-animatable");
+
+var Animatable = babelHelpers.interopRequireWildcard(_reactNativeAnimatable);
+
+var _FontAwesome = require("react-native-vector-icons/FontAwesome");
+
+var _FontAwesome2 = babelHelpers.interopRequireDefault(_FontAwesome);
+
+var _Constants = require("../Constants");
+
+var _axios = require("axios");
+
+var _axios2 = babelHelpers.interopRequireDefault(_axios);
+
+var _reactNativeFbsdk = require("react-native-fbsdk");
+
+var _reactNativeFbsdk2 = babelHelpers.interopRequireDefault(_reactNativeFbsdk);
+
+var regeneratorRuntime = require("regenerator-runtime");
+
+var Profile = function (_Component) {
+  babelHelpers.inherits(Profile, _Component);
+
+  function Profile(props) {
+    babelHelpers.classCallCheck(this, Profile);
+
+    var _this = babelHelpers.possibleConstructorReturn(this, (Profile.__proto__ || Object.getPrototypeOf(Profile)).call(this, props));
+
+    _this.state = {
+      pontos: 0,
+      nome: ''
+    };
+    return _this;
+  }
+
+  babelHelpers.createClass(Profile, [{
+    key: "componentWillUpdate",
+    value: function componentWillUpdate() {
+      var _this2 = this;
+
+      _reactNative.AsyncStorage.getItem(_Constants.PONTOS_KEY).then(function (pontosValue) {
+        _this2.setState({
+          pontos: pontosValue
+        });
+      }, function (error) {
+        console.log('Erro ao recuperar pontos no async ' + error.message);
+      });
+    }
+  }, {
+    key: "componentWillMount",
+    value: function componentWillMount() {
+      var _this3 = this;
+
+      _reactNative.AsyncStorage.getItem(_Constants.PONTOS_KEY).then(function (pontosValue) {
+        _this3.setState({
+          pontos: pontosValue
+        });
+      }, function (error) {
+        console.log('Erro ao recuperar pontos no async ' + error.message);
+      });
+
+      _reactNative.AsyncStorage.getItem(_Constants.NOME_KEY).then(function (nomeValue) {
+        _this3.setState({
+          nome: nomeValue
+        });
+      }, function (error) {
+        console.log('Erro ao recuperar nome no async ' + error.message);
+      });
+    }
+  }, {
+    key: "logout",
+    value: function logout(navigate) {
+      return regeneratorRuntime.async(function logout$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              _context.prev = 0;
+              _context.next = 3;
+              return regeneratorRuntime.awrap(_reactNative.AsyncStorage.removeItem(_Constants.STORAGE_KEY));
+
+            case 3:
+              _context.next = 5;
+              return regeneratorRuntime.awrap(_reactNative.AsyncStorage.removeItem(_Constants.PONTOS_KEY));
+
+            case 5:
+              _context.next = 7;
+              return regeneratorRuntime.awrap(_reactNative.AsyncStorage.removeItem(_Constants.NOME_KEY));
+
+            case 7:
+              _reactNativeFbsdk.LoginManager.logOut();
+              _reactNative.ToastAndroid.showWithGravity('Logout realizado com sucesso!', _reactNative.ToastAndroid.SHORT, _reactNative.ToastAndroid.CENTER);
+              navigate('Login');
+              _context.next = 15;
+              break;
+
+            case 12:
+              _context.prev = 12;
+              _context.t0 = _context["catch"](0);
+
+              console.log(_context.t0.message);
+
+            case 15:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, null, this, [[0, 12]]);
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var _this4 = this;
+
+      var navigate = this.props.navigation.navigate;
+
+      return _react2.default.createElement(
+        _reactNative.View,
+        { style: styles.container, __source: {
+            fileName: _jsxFileName,
+            lineNumber: 93
+          }
+        },
+        _react2.default.createElement(
+          _reactNative.View,
+          { style: styles.name, __source: {
+              fileName: _jsxFileName,
+              lineNumber: 94
+            }
+          },
+          _react2.default.createElement(
+            _reactNative.Text,
+            { style: styles.nameTitle, __source: {
+                fileName: _jsxFileName,
+                lineNumber: 95
+              }
+            },
+            this.state.nome
+          )
+        ),
+        _react2.default.createElement(
+          Animatable.View,
+          { animation: "zoomInUp", style: styles.points, __source: {
+              fileName: _jsxFileName,
+              lineNumber: 98
+            }
+          },
+          _react2.default.createElement(
+            _reactNative.Text,
+            { style: styles.titlepoints, __source: {
+                fileName: _jsxFileName,
+                lineNumber: 99
+              }
+            },
+            "Sua pontua\xE7\xE3o"
+          ),
+          _react2.default.createElement(
+            _reactNative.Text,
+            { style: styles.valuepoints, __source: {
+                fileName: _jsxFileName,
+                lineNumber: 100
+              }
+            },
+            this.state.pontos
+          )
+        ),
+        _react2.default.createElement(
+          _reactNative.TouchableOpacity,
+          {
+            style: styles.buttonLogout,
+            onPress: function onPress() {
+              return _this4.logout(navigate);
+            },
+            __source: {
+              fileName: _jsxFileName,
+              lineNumber: 105
+            }
+          },
+          _react2.default.createElement(
+            _reactNative.Text,
+            { style: styles.buttonText, __source: {
+                fileName: _jsxFileName,
+                lineNumber: 109
+              }
+            },
+            "Sair"
+          )
+        )
+      );
+    }
+  }]);
+  return Profile;
+}(_react.Component);
+
+Profile.navigationOptions = {
+  tabBarLabel: "Meu Perfil",
+  tabBarIcon: function tabBarIcon(_ref) {
+    var focused = _ref.focused;
+    return _react2.default.createElement(_FontAwesome2.default, {
+      name: "user",
+      size: 30,
+      color: focused ? "rgba(44, 62, 80,1.0)" : "rgba(52, 73, 94,0.4)",
+      __source: {
+        fileName: _jsxFileName,
+        lineNumber: 26
+      }
+    });
+  }
+};
+exports.default = Profile;
+
+
+var styles = _reactNative.StyleSheet.create({
+  container: {
+    flex: 1,
+
+    backgroundColor: "rgba(236, 240, 241,1.0)"
+  },
+  name: {
+    padding: 10,
+    flex: 2,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: 'rgba(44, 62, 80,1.0)'
+
+  },
+  nameTitle: {
+    fontSize: 30,
+    fontWeight: "100",
+    color: 'rgba(236, 240, 241,1.0)',
+    textAlign: "center"
+  },
+  points: {
+    flex: 5,
+    padding: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(52, 73, 94,1.0)"
+  },
+  titlepoints: {
+    color: "rgba(236, 240, 241,1.0)"
+  },
+  valuepoints: {
+    fontWeight: "bold",
+    textAlign: 'center',
+    fontSize: 150,
+    color: "rgba(236, 240, 241,1.0)"
+  },
+  buttonLogout: {
+    flex: 1,
+    backgroundColor: "#c0392b",
+    paddingVertical: 15,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "stretch"
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 20,
+    padding: 10
+  }
+});
+
+_reactNative.AppRegistry.registerComponent("Profile", Profile);

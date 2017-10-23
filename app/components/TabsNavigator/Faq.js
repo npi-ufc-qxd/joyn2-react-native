@@ -4,9 +4,7 @@ import {
     StyleSheet,
     View,
     Text,
-    Image,
-    ToastAndroid,
-    StatusBar
+    ScrollView
 } from "react-native";
 
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -15,23 +13,23 @@ import Accordion from 'react-native-collapsible/Accordion';
 const questions = [
   {
     title: 'O que é o Joyn?',
-    content: 'É um aplicativo para dispositivos móveis com o objetivo de "gamificar" os eventos da UFC-Quixadá, '+
-    ' em especial os encontros universitários (EU), premiando os alunos que mais participassem. '+
-    ' O JOYN utiliza-se da gamificação para incentivar os alunos do campus a participarem de seus eventos.',
+    content: 'É um aplicativo para celular com o objetivo de "gamificar" os eventos da UFC-Quixadá, '+
+    'em especial os Encontros Universitários (EU), premiando os alunos que mais participam. '+
+    'O Joyn utiliza a gamificação para incentivar os alunos do campus a participarem de seus eventos.',
   },
   {
     title: 'Como funciona o Joyn?',
-    content: 'O Joyn utiliza-se de forma dinâmica da leitura de QR-Codes para ajuda a controlar a frequência'+ 
-    ' no evento e os alunos ainda concorrerão a prêmios através da presença nas atividades durante os encontros.',
+    content: 'O Joyn utiliza de forma dinâmica a leitura de QR-Codes para ajuda a controlar a frequência'+ 
+    ' no evento. Os alunos também concorrerão a prêmios através da presença nas atividades durante os encontros.',
   },
   {
     title: 'Como faço para participar e receber presença em uma atividade?',
     content:'Para participar de uma atividade é necessário realizar a leitura de QR-Codes da atividade.'+
     ' Existem dois tipos de atividade: CheckIn e CheckIn_CheckOut. Uma atividade do tipo CheckIn é aquela'+
-    ' na qual você deverá capturar somente um QR-Code, já uma atividade do tipo CheckIn_CheckOut você deverá'+
+    ' na qual você deverá capturar somente um QR-Code, já numa atividade do tipo CheckIn_CheckOut você deverá'+
     ' capturar dois ou mais QR-Codes (Depende da duração da atividade, por exemplo uma atividade com duração'+
-    ' de dois dias terá quatro QR-Codes) um no início e o outro no fim da atividade, cada atividade'+
-    ' possue uma quantidade mínima de frequência que deve ser concluída de acordo com a quantidade de QR-Codes da mesma.'+
+    ' de dois dias terá quatro QR-Codes), um no início e o outro no fim da atividade. Cada atividade'+
+    ' possui uma quantidade mínima de frequência que deve ser concluída de acordo com a quantidade de QR-Codes da mesma.'+
     ' Deste modo, se você concluir essa quantidade mínima de frequência especificada você irá receber presença na atividade.',
   },
   {
@@ -44,7 +42,7 @@ const questions = [
     title:'Como funciona o Ranking?',
     content:'Toda atividade possui uma pontuação, assim o ranking é gerado de acordo com a quantidade de'+
     ' pontos obtidos até o momento por todos os participantes do evento. Logo, quanto mais você participar'+
-    ' das atividades e pontuar nas mesmas, melhor será sua pontuação no ranking.',
+    ' das atividades e pontuar nas mesmas, melhor será sua pontuação e colocação no ranking.',
   }
 ];
 
@@ -87,14 +85,14 @@ export default class Faq extends Component {
   render() {
     const { navigate } = this.props.navigation;
     return (
-        <View style={styles.header} >
+        <ScrollView style={styles.header} >
           <Accordion
             sections={questions}
             renderHeader={this._renderHeader}
             renderContent={this._renderContent}
             underlayColor={'#ecf0f1'}            
           />
-        </View>
+        </ScrollView>
     );
   }
 }

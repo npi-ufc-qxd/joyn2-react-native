@@ -1,0 +1,74 @@
+var _react = require("react");
+
+var _react2 = babelHelpers.interopRequireDefault(_react);
+
+var _reactNative = require("react-native");
+
+var _reactNavigation = require("react-navigation");
+
+var _reactNativeSmartSplashScreen = require("react-native-smart-splash-screen");
+
+var _reactNativeSmartSplashScreen2 = babelHelpers.interopRequireDefault(_reactNativeSmartSplashScreen);
+
+var _Login = require("./app/components/Login/Login");
+
+var _Login2 = babelHelpers.interopRequireDefault(_Login);
+
+var _Register = require("./app/components/Register/Register");
+
+var _Register2 = babelHelpers.interopRequireDefault(_Register);
+
+var _CaptureQRCode = require("./app/components/TabsNavigator/CaptureQRCode");
+
+var _CaptureQRCode2 = babelHelpers.interopRequireDefault(_CaptureQRCode);
+
+var _Profile = require("./app/components/TabsNavigator/Profile");
+
+var _Profile2 = babelHelpers.interopRequireDefault(_Profile);
+
+var _Ranking = require("./app/components/TabsNavigator/Ranking");
+
+var _Ranking2 = babelHelpers.interopRequireDefault(_Ranking);
+
+var _Faq = require("./app/components/TabsNavigator/Faq");
+
+var _Faq2 = babelHelpers.interopRequireDefault(_Faq);
+
+_reactNativeSmartSplashScreen2.default.close({
+  animationType: _reactNativeSmartSplashScreen2.default.animationType.scale,
+  duration: 850,
+  delay: 500
+});
+
+var TabsNavigation = (0, _reactNavigation.TabNavigator)({
+
+  Profile: { screen: _Profile2.default },
+  CaptureQRCode: { screen: _CaptureQRCode2.default },
+  Ranking: { screen: _Ranking2.default },
+  Faq: { screen: _Faq2.default }
+}, {
+  initialRouteName: "CaptureQRCode",
+  tabBarComponent: _reactNavigation.TabBarBottom,
+  tabBarPosition: 'bottom',
+  animationEnabled: true,
+  swipeEnabled: true,
+  lazy: true,
+  headerMode: 'none',
+  tabBarOptions: {
+    activeTintColor: 'rgba(44, 62, 80,1.0)',
+    inactiveTintColor: 'rgba(52, 73, 94,0.4)'
+  }
+});
+
+var AppNavigation = (0, _reactNavigation.StackNavigator)({
+  Login: { screen: _Login2.default },
+  Register: { screen: _Register2.default },
+  TabsNavigation: { screen: TabsNavigation }
+}, {
+  initialRouteName: "Login",
+  headerMode: "none"
+});
+
+_reactNative.AppRegistry.registerComponent("Joyn", function () {
+  return AppNavigation;
+});

@@ -1,0 +1,56 @@
+
+
+'use strict';
+
+var _jsxFileName = '/home/silvino.neto/Documentos/joyn2-react-native/node_modules/react-native-fbsdk/js/FBShareButton.js';
+
+var _propTypes = require('prop-types');
+
+var _propTypes2 = babelHelpers.interopRequireDefault(_propTypes);
+
+var _react = require('react');
+
+var React = babelHelpers.interopRequireWildcard(_react);
+
+var _reactNative = require('react-native');
+
+var ShareButton = function (_React$Component) {
+  babelHelpers.inherits(ShareButton, _React$Component);
+
+  function ShareButton() {
+    babelHelpers.classCallCheck(this, ShareButton);
+    return babelHelpers.possibleConstructorReturn(this, (ShareButton.__proto__ || Object.getPrototypeOf(ShareButton)).apply(this, arguments));
+  }
+
+  babelHelpers.createClass(ShareButton, [{
+    key: 'render',
+    value: function render() {
+      return React.createElement(RCTFBShareButton, babelHelpers.extends({}, this.props, {
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 48
+        }
+      }));
+    }
+  }]);
+  return ShareButton;
+}(React.Component);
+
+ShareButton.propTypes = babelHelpers.extends({}, _reactNative.ViewPropTypes, {
+  shareContent: _propTypes2.default.object
+});
+
+var styles = _reactNative.StyleSheet.create({
+  defaultButtonStyle: {
+    height: 30,
+    width: 80
+  }
+});
+
+ShareButton.defaultProps = {
+  style: styles.defaultButtonStyle
+};
+
+var RCTFBShareButton = (0, _reactNative.requireNativeComponent)('RCTFBShareButton', ShareButton);
+
+module.exports = ShareButton;

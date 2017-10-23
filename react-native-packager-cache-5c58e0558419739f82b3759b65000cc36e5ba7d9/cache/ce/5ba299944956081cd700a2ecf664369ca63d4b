@@ -1,0 +1,316 @@
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var _jsxFileName = "/home/silvino.neto/Documentos/joyn2-react-native/app/components/Login/Login.js";
+
+var _react = require("react");
+
+var _react2 = babelHelpers.interopRequireDefault(_react);
+
+var _reactNative = require("react-native");
+
+var _reactNativeLoadingSpinnerOverlay = require("react-native-loading-spinner-overlay");
+
+var _reactNativeLoadingSpinnerOverlay2 = babelHelpers.interopRequireDefault(_reactNativeLoadingSpinnerOverlay);
+
+var _axios = require("axios");
+
+var _axios2 = babelHelpers.interopRequireDefault(_axios);
+
+var _LoginForm = require("./LoginForm");
+
+var _LoginForm2 = babelHelpers.interopRequireDefault(_LoginForm);
+
+var _Constants = require("../Constants");
+
+var _reactNativeFbsdk = require("react-native-fbsdk");
+
+var _reactNativeFbsdk2 = babelHelpers.interopRequireDefault(_reactNativeFbsdk);
+
+var regeneratorRuntime = require("regenerator-runtime");
+
+var Login = function (_Component) {
+  babelHelpers.inherits(Login, _Component);
+
+  function Login(props) {
+    babelHelpers.classCallCheck(this, Login);
+
+    var _this = babelHelpers.possibleConstructorReturn(this, (Login.__proto__ || Object.getPrototypeOf(Login)).call(this));
+
+    _this.state = {
+      visible: false
+    };
+    return _this;
+  }
+
+  babelHelpers.createClass(Login, [{
+    key: "componentWillMount",
+    value: function componentWillMount() {
+      var _this2 = this;
+
+      var navigate = this.props.navigation.navigate;
+
+
+      _reactNative.AsyncStorage.getItem(_Constants.STORAGE_KEY).then(function (keyValue) {
+        _this2.setState({
+          visible: !_this2.state.visible
+        });
+        (0, _axios2.default)({
+          method: 'post',
+          url: _Constants.IP + '/testetoken',
+          data: {
+            token: keyValue
+          }
+        }).then(function (response) {
+          _this2.setState({
+            visible: false
+          });
+          navigate('TabsNavigation');
+        }).catch(function (error) {
+          _reactNative.AsyncStorage.removeItem(_Constants.STORAGE_KEY);
+          _reactNative.AsyncStorage.removeItem(_Constants.PONTOS_KEY);
+          _reactNative.AsyncStorage.removeItem(_Constants.NOME_KEY);
+          _this2.setState({
+            visible: false
+          });
+          console.log('Token inválido ' + error.message);
+        });
+      }, function (error) {
+        console.log('Erro ao recuperar token no async ' + error.message);
+      });
+    }
+  }, {
+    key: "doLogin",
+    value: function doLogin(navigate, email, senha) {
+      return regeneratorRuntime.async(function doLogin$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+              (0, _axios2.default)({
+                method: 'post',
+                url: _Constants.IP + '/logar',
+                data: {
+                  username: email,
+                  password: senha
+                },
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Accept': 'application/json'
+                }
+
+              }).then(function (response) {
+
+                var accesstoken = JSON.stringify(response.data.token);
+                accesstoken = accesstoken.replace(/['"]+/g, '');
+                _reactNative.AsyncStorage.setItem(_Constants.STORAGE_KEY, accesstoken);
+
+                (0, _axios2.default)({
+                  method: 'get',
+                  url: _Constants.IP + '/usuario/' + _Constants.ID_EVENTO,
+                  headers: {
+                    'Authorization': accesstoken,
+                    'Content-Type': 'application/json'
+                  }
+                }).then(function (response) {
+                  _reactNative.AsyncStorage.setItem(_Constants.PONTOS_KEY, JSON.stringify(response.data.pontos));
+                  _reactNative.AsyncStorage.setItem(_Constants.NOME_KEY, JSON.stringify(response.data.nome).replace(/['"]+/g, ''));
+                }).catch(function (error) {
+                  console.log('Erro ao recuperar usuario ' + error.message);
+                });
+
+                _reactNative.ToastAndroid.showWithGravity('Login realizado com sucesso!', _reactNative.ToastAndroid.SHORT, _reactNative.ToastAndroid.CENTER);
+                navigate('TabsNavigation');
+              }).catch(function (error) {
+                console.log(error);
+                _reactNative.ToastAndroid.showWithGravity('Email e/ou Senha incorretos!', _reactNative.ToastAndroid.SHORT, _reactNative.ToastAndroid.CENTER);
+              });
+
+            case 2:
+            case "end":
+              return _context.stop();
+          }
+        }
+      }, null, this);
+    }
+  }, {
+    key: "_fbAuth",
+    value: function _fbAuth(navigate) {
+      return regeneratorRuntime.async(function _fbAuth$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              _reactNativeFbsdk.LoginManager.logInWithReadPermissions(['public_profile,email']).then(function (result) {
+                if (result.isCancelled) {
+                  console.log('Login cancelado pelo usuário');
+                } else {
+                  console.log(result);
+                  _reactNativeFbsdk.AccessToken.getCurrentAccessToken().then(function (data) {
+                    var accessToken = data.accessToken;
+
+                    var responseInfoCallback = function responseInfoCallback(error, result) {
+                      if (error) {
+                        console.log(error);
+                      } else {
+                        console.log(result);
+
+                        (0, _axios2.default)({
+                          method: 'post',
+                          url: _Constants.IP + '/logarfacebook',
+                          data: {
+                            keyFacebook: result.id,
+                            nome: result.name,
+                            email: result.email,
+                            foto64: null
+                          },
+                          headers: {
+                            'Content-Type': 'application/json'
+                          }
+                        }).then(function (response) {
+                          var accesstoken = JSON.stringify(response.data.token);
+                          accesstoken = accesstoken.replace(/['"]+/g, '');
+                          _reactNative.AsyncStorage.setItem(_Constants.STORAGE_KEY, accesstoken);
+
+                          (0, _axios2.default)({
+                            method: 'get',
+                            url: _Constants.IP + '/usuario/' + _Constants.ID_EVENTO,
+                            headers: {
+                              'Authorization': accesstoken,
+                              'Content-Type': 'application/json'
+                            }
+                          }).then(function (response) {
+                            _reactNative.AsyncStorage.setItem(_Constants.PONTOS_KEY, JSON.stringify(response.data.pontos));
+                            _reactNative.AsyncStorage.setItem(_Constants.NOME_KEY, JSON.stringify(response.data.nome).replace(/['"]+/g, ''));
+                          }).catch(function (error) {
+                            console.log('Erro ao recuperar usuario ' + error.message);
+                          });
+                          _reactNative.ToastAndroid.showWithGravity('Login realizado com sucesso!', _reactNative.ToastAndroid.SHORT, _reactNative.ToastAndroid.CENTER);
+                          navigate('TabsNavigation');
+                        }).catch(function (error) {
+                          console.log(error);
+                          _reactNative.ToastAndroid.showWithGravity('Erro: ' + error.response.message, _reactNative.ToastAndroid.SHORT, _reactNative.ToastAndroid.CENTER);
+                        });
+                      }
+                    };
+
+                    var infoRequest = new _reactNativeFbsdk.GraphRequest('/me', {
+                      accessToken: accessToken,
+                      parameters: {
+                        fields: {
+                          string: 'email,name'
+                        }
+                      }
+                    }, responseInfoCallback);
+
+                    new _reactNativeFbsdk.GraphRequestManager().addRequest(infoRequest).start();
+                  });
+                }
+              }, function (error) {
+                _reactNative.ToastAndroid.showWithGravity('Ocorreu um erro no login, tente novamente!', _reactNative.ToastAndroid.SHORT, _reactNative.ToastAndroid.CENTER);
+              });
+
+            case 1:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, null, this);
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var navigate = this.props.navigation.navigate;
+
+      return _react2.default.createElement(
+        _reactNative.Image,
+        {
+          source: require("../../resources/images/login-bg.jpg"),
+          style: styles.backgroundImage,
+          blurRadius: 1,
+          resizeMode: "cover",
+          __source: {
+            fileName: _jsxFileName,
+            lineNumber: 179
+          }
+        },
+        _react2.default.createElement(_reactNativeLoadingSpinnerOverlay2.default, { visible: this.state.visible, textContent: "Validando suas informações...", textStyle: { color: '#FFF' }, __source: {
+            fileName: _jsxFileName,
+            lineNumber: 185
+          }
+        }),
+        _react2.default.createElement(_reactNative.StatusBar, {
+          backgroundColor: "rgba(44, 62, 80,1.0)",
+          barStyle: "light-content",
+          __source: {
+            fileName: _jsxFileName,
+            lineNumber: 186
+          }
+        }),
+        _react2.default.createElement(
+          _reactNative.View,
+          { style: styles.logoContainer, __source: {
+              fileName: _jsxFileName,
+              lineNumber: 190
+            }
+          },
+          _react2.default.createElement(_reactNative.Image, {
+            source: require("../../resources/images/joyn-logo.png"),
+            style: styles.logo,
+            __source: {
+              fileName: _jsxFileName,
+              lineNumber: 191
+            }
+          })
+        ),
+        _react2.default.createElement(
+          _reactNative.View,
+          { style: styles.formContainer, __source: {
+              fileName: _jsxFileName,
+              lineNumber: 197
+            }
+          },
+          _react2.default.createElement(_LoginForm2.default, { navigate: navigate, doLogin: this.doLogin, fbAuth: this._fbAuth, __source: {
+              fileName: _jsxFileName,
+              lineNumber: 198
+            }
+          })
+        )
+      );
+    }
+  }]);
+  return Login;
+}(_react.Component);
+
+exports.default = Login;
+
+
+var styles = _reactNative.StyleSheet.create({
+  backgroundImage: {
+    flex: 1,
+    width: null,
+    height: null,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+
+  logoContainer: {
+    flexGrow: 1,
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  logo: {
+    height: 150,
+    width: 150
+  },
+  title: {
+    color: "white",
+    marginTop: 10,
+    opacity: 0.7
+  },
+  formContainer: {
+    alignItems: "center",
+    marginBottom: 20
+  }
+});
+
+_reactNative.AppRegistry.registerComponent("Login", Login);

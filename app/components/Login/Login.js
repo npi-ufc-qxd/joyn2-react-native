@@ -97,7 +97,7 @@ export default class Login extends Component {
     .logInWithReadPermissions(['public_profile,email'])
     .then(function (result) {
       if (result.isCancelled) {
-        alert('Login cancelado pelo usuário');
+        console.log('Login cancelado pelo usuário');
       } else {
           console.log(result)
           AccessToken.getCurrentAccessToken().then(
@@ -144,7 +144,7 @@ export default class Login extends Component {
                     navigate('TabsNavigation');
                   }).catch(function (error) {
                     console.log(error);
-                    ToastAndroid.showWithGravity('Operação Inválida!', ToastAndroid.SHORT, ToastAndroid.CENTER);
+                    ToastAndroid.showWithGravity('Erro: ' + error.response.message, ToastAndroid.SHORT, ToastAndroid.CENTER);
                   });
                 }
               }
@@ -167,10 +167,9 @@ export default class Login extends Component {
 
             }
           )
-
     } 
   }, function (error) {
-    alert('Ocorreu um erro no login: ' + error);
+    ToastAndroid.showWithGravity('Ocorreu um erro no login, tente novamente!', ToastAndroid.SHORT, ToastAndroid.CENTER);
    });
   }
 
