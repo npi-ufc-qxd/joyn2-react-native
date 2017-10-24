@@ -16,7 +16,7 @@ import { STORAGE_KEY, IP, PONTOS_KEY } from '../Constants';
 
 export default class CaptureQRCode extends Component {
   static navigationOptions = {
-    tabBarLabel: "Capturar QRCode",
+    tabBarLabel: "Capturar QR-Code",
     tabBarIcon: ({ focused }) => (
       <Icon
         name="qrcode"
@@ -37,7 +37,7 @@ export default class CaptureQRCode extends Component {
 
   readQRCode(e) {
     this.setState({ qrcodeValue: e.data });
-    ToastAndroid.showWithGravity('QRCode capturado!', ToastAndroid.SHORT, ToastAndroid.CENTER);
+    ToastAndroid.showWithGravity('QR-Code capturado!', ToastAndroid.SHORT, ToastAndroid.CENTER);
   }
 
   async sendQRCodeToServer(){
@@ -62,13 +62,13 @@ export default class CaptureQRCode extends Component {
         
         AsyncStorage.setItem(PONTOS_KEY, JSON.stringify(response.data.pontos));
 
-        ToastAndroid.showWithGravity(this.state.mensagem, ToastAndroid.SHORT, ToastAndroid.CENTER);
+        ToastAndroid.showWithGravity(this.state.mensagem, ToastAndroid.LONG, ToastAndroid.CENTER);
         this.setState({qrcodeValue: ''})
       }).catch(function (error) {
         if(error.response.status == '409'){
-          ToastAndroid.showWithGravity('Capture o código de Checkin antes!', ToastAndroid.SHORT, ToastAndroid.CENTER);
+          ToastAndroid.showWithGravity('Capture o QR-Code de Checkin primeiro!', ToastAndroid.SHORT, ToastAndroid.CENTER);
         } else {
-          ToastAndroid.showWithGravity('QRCode inválido!', ToastAndroid.SHORT, ToastAndroid.CENTER);
+          ToastAndroid.showWithGravity('QR-Code inválido!', ToastAndroid.SHORT, ToastAndroid.CENTER);
         }
       });
     }, (error) => {
@@ -83,14 +83,14 @@ export default class CaptureQRCode extends Component {
           onRead={(e) => this.readQRCode(e)}
           reactivate
           showMarker
-          reactivateTimeout={3000}
+          reactivateTimeout={3500}
           topContent={
             <View style={styles.innerContainer}>
               <Text style={styles.titletext}>
-                Aponte para um dos QRCodes espalhados e capture os pontos!
+                Aponte para um dos QR-Codes espalhados e capture os pontos!
               </Text>
               <Text style={styles.simpleText}>
-                  Ao ler o QRCode aparecerá um botão para resgatar os pontos.
+                Ao ler o QR-Code aparecerá um botão para resgatar os pontos.
               </Text>
             </View>
           }

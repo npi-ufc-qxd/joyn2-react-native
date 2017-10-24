@@ -2,4 +2,4 @@ export const STORAGE_KEY = 'id_token';
 export const PONTOS_KEY = 'pontos_joyn';
 export const NOME_KEY = 'nome_joyn';
 export const IP = 'http://homologacaosistemas.quixada.ufc.br/joyn-api';
-export const ID_EVENTO = '3';
+export const ID_EVENTO = '8';
