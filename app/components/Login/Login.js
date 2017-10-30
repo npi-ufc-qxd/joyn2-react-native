@@ -144,7 +144,7 @@ export default class Login extends Component {
                     navigate('TabsNavigation');
                   }).catch(function (error) {
                     console.log(error);
-                    ToastAndroid.showWithGravity('Erro: ' + error.response.message, ToastAndroid.SHORT, ToastAndroid.CENTER);
+                    ToastAndroid.showWithGravity('Erro: ' + error.response.data.message, ToastAndroid.SHORT, ToastAndroid.CENTER);
                   });
                 }
               }
