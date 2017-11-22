@@ -12,10 +12,9 @@ import * as Animatable from "react-native-animatable";
 
 import Icon from "react-native-vector-icons/FontAwesome";
 
-import { STORAGE_KEY, IP, PONTOS_KEY, NOME_KEY } from '../Constants';
+import { STORAGE_KEY, IP, PONTOS_KEY, NOME_KEY, ARRAY_CAPTURADOS } from '../Constants';
 
 import axios from 'axios';
-
 import FBSDK, {LoginManager} from 'react-native-fbsdk';
 
 export default class Profile extends Component {
@@ -76,14 +75,96 @@ export default class Profile extends Component {
   
   async logout (navigate) {
     try {
-      await AsyncStorage.removeItem(STORAGE_KEY);
-      await AsyncStorage.removeItem(PONTOS_KEY);
-      await AsyncStorage.removeItem(NOME_KEY);
-      LoginManager.logOut();
-      ToastAndroid.showWithGravity('Logout realizado com sucesso!', ToastAndroid.SHORT, ToastAndroid.CENTER);
-      navigate('Login');
+      const arrayNaoResgatados = await AsyncStorage.getItem(ARRAY_CAPTURADOS);
+      var arrayRecebido = JSON.parse(arrayNaoResgatados);
+      if(arrayRecebido.length == 0){
+        await AsyncStorage.removeItem(STORAGE_KEY);
+        await AsyncStorage.removeItem(PONTOS_KEY);
+        await AsyncStorage.removeItem(NOME_KEY);
+        await AsyncStorage.removeItem(ARRAY_CAPTURADOS);
+        LoginManager.logOut();
+        ToastAndroid.showWithGravity('Logout realizado com sucesso!', ToastAndroid.SHORT, ToastAndroid.CENTER);
+        navigate('Login');
+      }else{
+        ToastAndroid.showWithGravity('Sincronize antes de fazer logout!', ToastAndroid.SHORT, ToastAndroid.CENTER);
+      }
     } catch (error) {
       console.log(error.message);
+    }
+  }
+
+  async sync () {
+    try {
+      const arrayNaoResgatados = await AsyncStorage.getItem(ARRAY_CAPTURADOS);
+      if (arrayNaoResgatados !== null){
+        var arrayRecebido = JSON.parse(arrayNaoResgatados);
+
+        if(arrayRecebido.length === 0){
+          ToastAndroid.showWithGravity("Você não tem códigos para sincronizar.", ToastAndroid.SHORT, ToastAndroid.CENTER);
+          return;
+        }
+
+        var parar = false;
+        var indexRemover = new Array();
+        console.log("antes: " + arrayRecebido);
+
+        try{
+          const keyValue = await AsyncStorage.getItem(STORAGE_KEY);
+          if (keyValue !== null){
+
+            for (i = 0; i < arrayRecebido.length; i++) { 
+              var codigoAtual = arrayRecebido[i];
+                
+                await axios({
+                  method: 'post',
+                  url: IP+'/resgatarqrcode',
+                  data: {
+                    codigo: codigoAtual
+                  },
+                  headers: {
+                    'Authorization': keyValue,
+                    'Content-Type': 'application/json'
+                  }
+                }).then((response) => {
+                  this.setState(
+                    {
+                        mensagem: response.data.mensagem
+                    }
+                  );
+                  
+                  AsyncStorage.setItem(PONTOS_KEY, JSON.stringify(response.data.pontos));
+                  ToastAndroid.showWithGravity(this.state.mensagem, ToastAndroid.LONG, ToastAndroid.CENTER);
+                  indexRemover.push(i);
+                  console.log(i);
+                }).catch(function (error) {
+                  if(error == 'Error: Network Error'){
+                    ToastAndroid.showWithGravity('Sem conexão, conecte-se e tente novamente!', ToastAndroid.SHORT, ToastAndroid.CENTER);
+                    parar = true;
+                  } else if (error.response.status == '409') {
+                    indexRemover.push(i);
+                    ToastAndroid.showWithGravity('Você capturou um Qr-Code de checkout antes do Qr-Code de checkin!', ToastAndroid.SHORT, ToastAndroid.CENTER);
+                  } else {
+                    indexRemover.push(i);
+                    ToastAndroid.showWithGravity('Você capturou um QR-Code inválido!', ToastAndroid.SHORT, ToastAndroid.CENTER);
+                  }
+                });
+              if(parar == true) break;
+            }
+            console.log("remover: " + indexRemover);
+            for (var j = indexRemover.length -1; j >= 0; j--){
+              arrayRecebido.splice(indexRemover[j],1);
+              console.log(indexRemover[j]);
+            }
+            console.log("depois: " + arrayRecebido);
+            AsyncStorage.setItem(ARRAY_CAPTURADOS, JSON.stringify(arrayRecebido));
+          }
+        }  catch (error) {
+          console.log(error)
+        }      
+      }
+    } catch (error) {
+      // Error retrieving data
+      console.log(error)
     }
   }
 
@@ -101,6 +182,13 @@ export default class Profile extends Component {
           {this.state.pontos}
           </Text>
         </Animatable.View>
+
+        <TouchableOpacity
+          style={styles.buttonSync}
+          onPress={() => this.sync(navigate)}
+        >
+          <Text style={styles.buttonTextSync}>Sincronizar</Text>
+        </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.buttonLogout}
@@ -158,10 +246,24 @@ const styles = StyleSheet.create({
     alignItems: "center",
     alignSelf: "stretch"
   },
+  buttonTextSync: {
+    color: "white",
+    fontSize: 20,
+    padding: 10
+  },
   buttonText: {
     color: "white",
     fontSize: 20,
     padding: 10
+  },
+  buttonSync: {
+    flex:1,
+    backgroundColor: "#27ae60",
+    paddingVertical: 10,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "stretch",
   }
 });
 

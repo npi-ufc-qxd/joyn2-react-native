@@ -12,7 +12,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import QRCodeScanner from "react-native-qrcode-scanner";
 import axios from 'axios';
 
-import { STORAGE_KEY, IP, PONTOS_KEY } from '../Constants';
+import { STORAGE_KEY, IP, PONTOS_KEY, ARRAY_CAPTURADOS } from '../Constants';
 
 export default class CaptureQRCode extends Component {
   static navigationOptions = {
@@ -33,7 +33,7 @@ export default class CaptureQRCode extends Component {
         qrcodeValue: '',
         mensagem: ''
     };
-}
+  }
 
   readQRCode(e) {
     this.setState({ qrcodeValue: e.data });
@@ -41,6 +41,7 @@ export default class CaptureQRCode extends Component {
   }
 
   async sendQRCodeToServer(){
+    var qrCode = this.state.qrcodeValue;
     AsyncStorage.getItem(STORAGE_KEY).then((keyValue) => {
       
       axios({
@@ -65,8 +66,20 @@ export default class CaptureQRCode extends Component {
         ToastAndroid.showWithGravity(this.state.mensagem, ToastAndroid.LONG, ToastAndroid.CENTER);
         this.setState({qrcodeValue: ''})
       }).catch(function (error) {
-        if(error.response.status == '409'){
-          ToastAndroid.showWithGravity('Capture o QR-Code de Checkin primeiro!', ToastAndroid.SHORT, ToastAndroid.CENTER);
+        if(error == 'Error: Network Error'){
+          AsyncStorage.getItem(ARRAY_CAPTURADOS).then((arrayNaoResgatados) => {
+            var arrayRecebido = JSON.parse(arrayNaoResgatados);
+            if(arrayRecebido.indexOf(qrCode) == -1){
+              arrayRecebido.push(qrCode);
+              AsyncStorage.setItem(ARRAY_CAPTURADOS, JSON.stringify(arrayRecebido));
+            }
+            ToastAndroid.showWithGravity('Sem conexão. Sincronize quando tiver conexão!', ToastAndroid.SHORT, ToastAndroid.CENTER);
+          }).catch(function (error) {
+            console.log(error);
+            ToastAndroid.showWithGravity('Erro ao recuperar QR-Code!', ToastAndroid.SHORT, ToastAndroid.CENTER);
+          });
+        } else if (error.response.status == '409') {
+          ToastAndroid.showWithGravity('Capture o QR-Code de Checkin primeiro ou sincronize e tente novamente!', ToastAndroid.SHORT, ToastAndroid.CENTER);
         } else {
           ToastAndroid.showWithGravity('QR-Code inválido!', ToastAndroid.SHORT, ToastAndroid.CENTER);
         }
