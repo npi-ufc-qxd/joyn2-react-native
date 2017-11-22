@@ -4,7 +4,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import axios from 'axios';
 import LoginForm from "./LoginForm";
 
-import { STORAGE_KEY, IP, PONTOS_KEY, NOME_KEY, ID_EVENTO } from '../Constants';
+import { STORAGE_KEY, IP, PONTOS_KEY, NOME_KEY, ID_EVENTO, ARRAY_CAPTURADOS } from '../Constants';
 
 import FBSDK, {LoginManager,LoginButton,GraphRequest,GraphRequestManager,AccessToken} from 'react-native-fbsdk';
 
@@ -79,6 +79,8 @@ export default class Login extends Component {
       }).then(function (response) {
         AsyncStorage.setItem(PONTOS_KEY, JSON.stringify(response.data.pontos));
         AsyncStorage.setItem(NOME_KEY, JSON.stringify(response.data.nome).replace(/['"]+/g, ''));
+        var QrCodes = new Array();
+        AsyncStorage.setItem(ARRAY_CAPTURADOS, JSON.stringify(QrCodes));
       }).catch(function (error) {
         console.log('Erro ao recuperar usuario '+error.message);
       });
