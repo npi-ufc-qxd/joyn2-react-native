@@ -68,7 +68,7 @@ export default class Faq extends Component {
 
   _renderHeader(question) {
     return (
-      <View >
+      <View style={styles.header2}>
         <Text style={styles.textTititle}>{question.title}</Text>
       </View>
     );
@@ -76,7 +76,7 @@ export default class Faq extends Component {
  
   _renderContent(question) {
     return (
-      <View>
+      <View style={styles.content}>
         <Text style={styles.textQuestion}>{question.content}</Text>
       </View>
     );
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     textAlign: 'justify',
-    backgroundColor: "#F2F2F2"
+    backgroundColor: "white"
   },
   textQuestion: {
     color: "black",
@@ -133,6 +133,14 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: 10,
     backgroundColor: '#fff'
+  },
+  content: {
+    padding: 20,
+    backgroundColor: '#fff',
+  },
+  header2: {
+    backgroundColor: '#F5FCFF',
+    padding: 10,
   }
 });
 
