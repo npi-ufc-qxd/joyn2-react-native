@@ -38,5 +38,6 @@ buck-out/
 android/app/libs
 
 react-native-packager-cache-55b9fc1d28acea1d397326edeba73fa7995237f9/
+haste-map-react-native*
 
 *.keystore

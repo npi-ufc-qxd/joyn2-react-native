@@ -69,7 +69,7 @@ export default class Faq extends Component {
   _renderHeader(question) {
     return (
       <View style={styles.header2}>
-        <Text style={styles.textTititle}>{question.title}</Text>
+        <Text style={styles.textTitle}>{question.title}</Text>
       </View>
     );
   }
@@ -110,9 +110,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center"
   },
-  textTititle: {
+  textTitle: {
     color: "black",
-    height: 50,
+    height: 70,
     marginTop: 10,
     marginLeft: 20,
     fontSize: 18,
@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
   },
   header2: {
     backgroundColor: '#F5FCFF',
-    padding: 10,
+    padding: 5,
   }
 });
 
